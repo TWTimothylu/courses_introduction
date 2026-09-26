@@ -8,3 +8,4 @@ publish.cjs
 registration-backend/*.xlsx
 registration-backend/*.ndjson
 registration-backend/sheet-preview.png
+dist/setup-local.html

@@ -11,6 +11,8 @@ const EXPERIENCES = ['沒有，想第一次試試','玩過樂高，尚未接觸�
 
 function doGet(e) {
   const template=HtmlService.createTemplateFromFile('Registration');
+  const configuredHome=PropertiesService.getScriptProperties().getProperty('HOME_URL') || '';
+  template.homeUrl=/^https:\/\//.test(configuredHome)?configuredHome:'https://www.creativstacks.info/常態課程介紹';
   template.initialCourse=Object.prototype.hasOwnProperty.call(COURSE_NAMES,e && e.parameter && e.parameter.course)?e.parameter.course:'';
   return template.evaluate().setTitle('預約免費體驗｜創意方塊機器人教室').addMetaTag('viewport','width=device-width, initial-scale=1');
 }
@@ -78,7 +80,7 @@ function fingerprint_(d){
   const {token,submissionId,...content}=d;
   return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,JSON.stringify(content)).map(b=>('0'+((b+256)%256).toString(16)).slice(-2)).join('');
 }
-function cell_(s){return typeof s==='string'&&/^[=+\-@]/.test(s)?"'"+s:s;}
+function cell_(s){return typeof s==='string'&&/^(?:[=+\-@]|0\d)/.test(s)?"'"+s:s;}
 function submitApplication(raw){
   let d;
   try{assertSender_();d=validate_(raw);}catch(e){return {ok:false,message:e.message};}
