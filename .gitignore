@@ -1,0 +1,10 @@
+node_modules/
+.openai/
+publish.cjs
+*.tar.gz
+.env
+.env.*
+!.env.example
+registration-backend/*.xlsx
+registration-backend/*.ndjson
+registration-backend/sheet-preview.png
