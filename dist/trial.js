@@ -1,6 +1,12 @@
 (() => {
 const form=document.getElementById('trial-form'), button=document.getElementById('submit-button'), error=document.getElementById('form-error'), dialog=document.getElementById('success-dialog');
-const live=!!(window.google && google.script && google.script.run);
+const live=true;
+const endpoint='https://script.google.com/macros/s/AKfycby8MyLk1o5kT-jGIM-r5MOn-UhGVIiGIB3mNmV9DZot7r4zs3UaqUYSjl6dADplrkh_Tg/exec';
+async function callBackend(action,data){
+  const response=await fetch(endpoint,{method:'POST',credentials:'omit',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,data})});
+  if(!response.ok)throw new Error('無法連線');
+  return response.json();
+}
 let token='', requestId=crypto.randomUUID(), busy=false, completed=false;
 const startedAt=Date.now();
 const names={essential:'簡易樂高機器人班',prime:'樂高機器人班',scratch:'Scratch 程式班','robot-python':'樂高機器人 Python 班',python:'Python 程式班',unsure:'由老師推薦課程'};
@@ -9,7 +15,7 @@ if(names[initial])form.elements.course.value=initial;
 if(live){
 document.getElementById('preview-notice').hidden=true;
 button.textContent='準備報名表…';button.disabled=true;
-google.script.run.withSuccessHandler(t=>{token=t;button.disabled=false;button.textContent='送出體驗報名 →';}).withFailureHandler(()=>{error.hidden=false;error.textContent='報名表暫時無法連線，請重新整理，或透過官方 LINE 聯絡我們。';}).getFormToken();
+callBackend('token').then(result=>{if(!result.ok||!result.token)throw new Error('連線失敗');token=result.token;button.disabled=false;button.textContent='送出體驗報名 →';}).catch(()=>{error.hidden=false;error.textContent='報名表暫時無法連線，請重新整理，或透過官方 LINE 聯絡我們。';});
 }
 form.elements.grade.addEventListener('change',()=>{
 const grade=Number(form.elements.grade.value);
@@ -37,13 +43,13 @@ if(!/^(09\d{8}|\+8869\d{8})$/.test(data.phone)){error.hidden=false;error.textCon
 Object.assign(data,{submissionId:requestId,token,startedAt,privacyVersion:'2026-09-26-v1',source:'體驗課報名頁'});
 if(!live){showReceipt({},data);return;}
 busy=true;button.disabled=true;button.textContent='正在送出，請稍候…';
-google.script.run.withSuccessHandler(result=>{
+callBackend('submit',data).then(result=>{
 busy=false;
 if(result && result.ok){showReceipt(result,data);}
 else {button.disabled=false;button.textContent='重新送出體驗報名 →';error.hidden=false;error.textContent=result?.message||'暫時無法完成報名，請稍後再試或加入 LINE 聯絡我們。';}
-}).withFailureHandler(()=>{
+}).catch(()=>{
 busy=false;button.disabled=false;button.textContent='重新送出體驗報名 →';error.hidden=false;error.textContent='連線中斷，尚未確認是否送出成功。請使用本頁重新送出；系統會依報名編號避免重複登記。';
-}).submitApplication(data);
+});
 });
 dialog.querySelectorAll('.close,.dismiss').forEach(el=>el.addEventListener('click',()=>dialog.close()));
 document.getElementById('copy-message').addEventListener('click',async()=>{

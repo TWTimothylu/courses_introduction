@@ -168,3 +168,18 @@ function processMailQueue(){
     });
   }finally{lock.releaseLock();}
 }
+
+
+// Public JSON transport: callers omit browser credentials, avoiding multi-login routing.
+function doPost(e) {
+  let result;
+  try {
+    const raw=e && e.postData && e.postData.contents || '';
+    if(raw.length>15000)throw new Error('報名資料過長');
+    const request=JSON.parse(raw);
+    if(request.action==='token')result={ok:true,token:getFormToken()};
+    else if(request.action==='submit')result=submitApplication(request.data);
+    else result={ok:false,message:'不支援的操作'};
+  } catch(error) { result={ok:false,message:'無法處理報名資料，請重新整理後再試。'}; }
+  return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
