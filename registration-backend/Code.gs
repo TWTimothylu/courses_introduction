@@ -4,7 +4,7 @@ const SETTINGS = Object.freeze({
   lineUrl: 'https://lin.ee/7FoFpdM',
   privacyVersion: '2026-09-26-v1'
 });
-const HEADERS = ['報名時間','報名編號','小朋友名字','年級','學校','體驗課程','偏好時段','相關經驗','經驗補充','家長稱呼','家長手機','家長Email','其他安排需求','個資使用同意','同意條款版本','報名來源','聯絡進度','LINE已聯絡','確認信狀態','寄信時間','寄信錯誤','請求識別碼','資料指紋','寄信嘗試次數','最後嘗試時間'];
+const HEADERS = ['報名時間','報名編號','小朋友名字','年級','學校','體驗課程','偏好時段','相關經驗','經驗補充','家長稱呼','家長手機','家長Email','其他安排需求','個資使用同意','同意條款版本','報名來源','聯絡進度','LINE已聯絡','確認信狀態','寄信時間','寄信錯誤','請求識別碼','資料指紋','寄信嘗試次數','最後嘗試時間','推薦人'];
 const COURSE_NAMES = {essential:'簡易樂高機器人班',prime:'樂高機器人班',scratch:'Scratch 程式班','robot-python':'樂高機器人 Python 班',python:'Python 程式班',unsure:'由老師推薦課程'};
 const TIMES = ['平日下午','平日晚上','週六上午','週六下午','週日上午','週日下午','時間彈性，可討論'];
 const EXPERIENCES = ['沒有，想第一次試試','玩過樂高，尚未接觸程式','學過機器人或 Scratch','學過 Python 或其他文字程式','其他經驗'];
@@ -27,6 +27,14 @@ function sheet_(){
   const sheet=SpreadsheetApp.openById(id).getSheetByName(SETTINGS.sheetName);
   if(!sheet)throw new Error('找不到報名工作表');
   const headers=sheet.getRange(1,1,1,HEADERS.length).getValues()[0];
+  // Add the optional field after existing columns without shifting mail/status indexes.
+  if(headers[25]==='' && JSON.stringify(headers.slice(0,25))===JSON.stringify(HEADERS.slice(0,25))){
+    sheet.getRange(1,26).setValue('推薦人');
+    sheet.getRange(1,26).setFontWeight('bold').setBackground('#eef0f3');
+    sheet.setColumnWidth(26,240);
+    sheet.getRange(2,26,sheet.getMaxRows()-1,1).setNumberFormat('@');
+    headers[25]='推薦人';
+  }
   if(JSON.stringify(headers)!==JSON.stringify(HEADERS))throw new Error('報名表欄位已變更，請聯絡管理者');
   return sheet;
 }
@@ -64,7 +72,7 @@ function validate_(raw){
     childName:text_(raw.childName,40,true),grade:Number(raw.grade),school:text_(raw.school,80,true),
     course:text_(raw.course,40,true),parentName:text_(raw.parentName,40,true),
     phone:text_(raw.phone,20,true).replace(/[ -]/g,''),email:text_(raw.email,160,true).toLowerCase(),
-    experience:text_(raw.experience,80,true),experienceNotes:text_(raw.experienceNotes,500,false),notes:text_(raw.notes,800,false),
+    experience:text_(raw.experience,80,true),experienceNotes:text_(raw.experienceNotes,500,false),notes:text_(raw.notes,800,false),referrer:text_(raw.referrer,80,false),
     submissionId:text_(raw.submissionId,50,true),token:text_(raw.token,50,true)
   };
   if(!Number.isInteger(d.grade)||d.grade<1||d.grade>12)throw new Error('請選擇有效年級');
@@ -102,7 +110,7 @@ function submitApplication(raw){
     if(todayRows.filter(r=>r[11]===d.email).length>=3)return {ok:false,message:'此信箱今天已送出多份報名；如需補充或更正，請透過 LINE 聯絡我們。'};
     if(todayRows.length>=100)return {ok:false,message:'線上報名暫停收件，請透過官方 LINE 聯絡我們。'};
     const id='CS-'+Utilities.formatDate(new Date(),'Asia/Taipei','yyyyMMdd')+'-'+Utilities.getUuid().slice(0,8).toUpperCase();
-    const row=[new Date(),id,d.childName,d.grade+' 年級',d.school,COURSE_NAMES[d.course],d.preferredTimes.join('、'),d.experience,d.experienceNotes,d.parentName,d.phone,d.email,d.notes,'已同意',SETTINGS.privacyVersion,'體驗課報名頁','待聯絡',false,'待寄送','','',d.submissionId,fingerprint,0,''].map(cell_);
+    const row=[new Date(),id,d.childName,d.grade+' 年級',d.school,COURSE_NAMES[d.course],d.preferredTimes.join('、'),d.experience,d.experienceNotes,d.parentName,d.phone,d.email,d.notes,'已同意',SETTINGS.privacyVersion,'體驗課報名頁','待聯絡',false,'待寄送','','',d.submissionId,fingerprint,0,'',d.referrer].map(cell_);
     sheet.appendRow(row);
     SpreadsheetApp.flush();
     CacheService.getScriptCache().remove('form:'+d.token);
@@ -182,4 +190,10 @@ function doPost(e) {
     else result={ok:false,message:'不支援的操作'};
   } catch(error) { result={ok:false,message:'無法處理報名資料，請重新整理後再試。'}; }
   return ContentService.createTextOutput(JSON.stringify(result)).setMimeType(ContentService.MimeType.JSON);
+}
+
+function updateRegistrationFields(){
+  assertSender_();
+  sheet_();
+  console.log("推薦人欄位已就緒");
 }
