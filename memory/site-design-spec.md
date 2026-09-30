@@ -297,3 +297,14 @@ Hero桌面1.1fr/1fr，gap56px；h1 clamp(34px,3.8vw,52px)。主要學習區三�
 每門詳情三個預約入口（Hero、資訊卡、手機列）都帶固定course ID；FAQ用原生details。不修改報名後端、Sheet或寄信。首頁仍保留原有七個預約入口。
 
 驗證：五頁靜態檔案／資產／錨點與各頁三個預約參數檢查通過；app.js與course.js語法檢查通過；瀏覽器桌面與390px手機檢查、返回3-7組兩門課、切換6-12後開Python、報名頁預選python與推薦人欄位存在確認通過。本次沒有送出真實報名或測試郵件。
+
+## 16. 素材載入優化（2026-10-01）
+
+此節取代前文原始素材的正式引用與preload=metadata設定。原始JPG/PNG/MP4仍保留，優化版使用獨立檔名，舊網址仍可用。
+- 課堂照：class-640.webp 50,110 bytes／class-1280.webp 123,196 bytes；競賽照：59,264／151,288 bytes。以srcset及sizes依畫面與像素密度選擇，原圖不再由新頁面引用。
+- Logo：brand-logo-small.webp 18,378 bytes；favicon.png 23,510 bytes。報名頁multiply保留。
+- 影片：robot-web.mp4 3,989,739 bytes；scratch-web.mp4 2,440,901 bytes。兩支720×720 H.264／yuv420p，AAC96k，保留原有聲音、長度與比例，moov置於mdat之前（faststart）。
+- 共用media.js/media.css，scripts/media-markup.mjs產生封面播放器。video初始無src且preload=none，data-src存路徑；封面圖lazy loading，只有使用者點擊才指派src並播放。播放一支會暫停其他支；載入錯誤可點封面重試，有無JS的直接影片連結。
+- 首頁與Prime/Scratch詳情套用點播；其餘詳情用響應式照片。更新build-course-pages.mjs確保重新產頁不會回退。GitHub白名單新增media.js/media.css。
+- scripts/optimize-media.py可重建優化素材，需要Pillow及.openai/ffmpeg.exe；FFmpeg來自imageio-ffmpeg 0.6.0官方PyPI套件，工具及中間圖不入庫。
+- 驗證：本機HTTP請求紀錄確認點播前0筆MP4；兩支影片點播readyState4、currentTime增加，互斥播放正常。390px手機無橫向溢出、封面及Logo正常。七頁資產引用及faststart結構通過檢查。未實測行動網路秒數，不宣稱速度提升固定倍數。

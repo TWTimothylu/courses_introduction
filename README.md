@@ -35,3 +35,7 @@ node registration-backend/test-backend.mjs 可離線測試驗證、防重複、�
 ## 獨立課程詳情頁
 
 五個 course-*.html 由 scripts/course-details.json 與 scripts/build-course-pages.mjs 產生；修改後執行 node scripts/build-course-pages.mjs。共用 dist/course.css 與 course.js；首頁新增詳情入口，保留年級篩選。部署白名單已加入五頁及共用樣式／互動。
+
+## 素材優化
+
+2026-10-01：照片使用640／1280 WebP及srcset，Logo另輸出128px；影片720px H.264＋faststart，封面點擊後才下載。原始素材保留。詳見memory/site-design-spec.md第16節，重建腳本scripts/optimize-media.py。

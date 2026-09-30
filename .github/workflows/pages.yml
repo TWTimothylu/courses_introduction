@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir _site
           cp -r dist/assets _site/assets
-          cp dist/index.html dist/style.css dist/app.js dist/trial.html dist/trial.css dist/trial.js dist/course-*.html dist/course.css dist/course.js _site/
+          cp dist/index.html dist/style.css dist/app.js dist/trial.html dist/trial.css dist/trial.js dist/course-*.html dist/course.css dist/course.js dist/media.css dist/media.js _site/
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
