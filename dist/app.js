@@ -5,9 +5,15 @@ const list=courses.filter(c=>value==='all'||c.group===value);
 document.getElementById('count').textContent=value==='all'?'目前顯示全部 '+list.length+' 門課程。':'已找到 '+list.length+' 門適合 '+value.replace('-', '–')+' 年級的課程。';
 document.getElementById('course-cta-label').textContent=value==='all'?'查看全部 '+list.length+' 門課程':'查看 '+list.length+' 門適合課程';
 document.getElementById('course-results-title').textContent=value==='all'?'探索全部 '+list.length+' 門課程。':value.replace('-', '–')+' 年級，適合的課程。';
-document.getElementById('course-grid').innerHTML=list.map(c=>'<article class="course"><div class="course-top"><span class="course-tag">'+c.tag+'</span><h3>'+c.name+'</h3><p>'+c.line+'</p></div><div class="course-body"><span class="grade-label">'+c.grade+'</span><ul>'+c.features.map(f=>'<li>'+f+'</li>').join('')+'</ul><p class="price">NT$ '+c.price+' <small>/ 12 堂・每堂 1.5 小時</small></p><p class="equipment">'+c.equipment+'</p><details><summary>課程與教具詳情</summary><p>'+c.detail+'</p></details><a class="button" href="trial.html?course='+c.id+'" aria-label="預約'+c.name+'免費體驗">預約免費體驗 ↗</a></div></article>').join('');
+document.getElementById('course-grid').innerHTML=list.map(c=>'<article class="course"><div class="course-top"><span class="course-tag">'+c.tag+'</span><h3>'+c.name+'</h3><p>'+c.line+'</p></div><div class="course-body"><span class="grade-label">'+c.grade+'</span><ul>'+c.features.map(f=>'<li>'+f+'</li>').join('')+'</ul><p class="price">NT$ '+c.price+' <small>/ 12 堂・每堂 1.5 小時</small></p><p class="equipment">'+c.equipment+'</p><a class="course-detail-link" href="course-'+c.id+'.html?grade='+encodeURIComponent(value)+'" aria-label="認識'+c.name+'">認識這門課 <span aria-hidden="true">→</span></a><a class="button" href="trial.html?course='+c.id+'" aria-label="預約'+c.name+'免費體驗">預約免費體驗 ↗</a></div></article>').join('');
 return list.map(c=>({name:c.name,grades:c.grade,price:c.price}));
 }
-document.getElementById('grade').addEventListener('change',e=>renderCourses(e.target.value));
-renderCourses();
+const gradeControl=document.getElementById('grade');
+const validGroups=['all','1-3','3-7','6-12'];
+let initialGroup=new URLSearchParams(location.search).get('grade');
+if(!validGroups.includes(initialGroup)){try{initialGroup=sessionStorage.getItem('course-grade');}catch{}}
+gradeControl.value=validGroups.includes(initialGroup)?initialGroup:'all';
+gradeControl.addEventListener('change',e=>{const group=e.target.value;try{sessionStorage.setItem('course-grade',group);}catch{}const url=new URL(location.href);url.searchParams.set('grade',group);history.replaceState(null,'',url);renderCourses(group);});
+renderCourses(gradeControl.value);
+window.addEventListener('pageshow',()=>renderCourses(gradeControl.value));
 document.querySelectorAll('video').forEach(v=>v.addEventListener('play',()=>document.querySelectorAll('video').forEach(other=>{if(other!==v)other.pause()})));

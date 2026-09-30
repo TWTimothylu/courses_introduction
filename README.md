@@ -23,3 +23,15 @@ node registration-backend/test-backend.mjs 可離線測試驗證、防重複、�
 2026-09-26 已使用經授權的虛構資料驗證正式表單、Sheet 記錄、寄件帳號、收件與 LINE 引導。
 
 2026-09-30：新報名另寄管理員通知至 arway.lu@gmail.com，管理員狀態獨立記錄於 AA:AE；既有報名不補寄。失敗由原有五分鐘排程重試，上限三次；寄送結果不明時標記人工確認。
+
+## 課程內容外部記憶
+
+[五門常態課程資料與改寫文案](memory/course-content.md)：來源、費用教具、年級差異、文案草稿及後續擴寫規則。
+
+## 網站設計與功能外部記憶
+
+[網站設計規格](memory/site-design-spec.md)：色彩、版面、元件、響應式、報名與寄信、發布與接續工作注意事項。修改前先閱讀根目錄 AGENTS.md。
+
+## 獨立課程詳情頁
+
+五個 course-*.html 由 scripts/course-details.json 與 scripts/build-course-pages.mjs 產生；修改後執行 node scripts/build-course-pages.mjs。共用 dist/course.css 與 course.js；首頁新增詳情入口，保留年級篩選。部署白名單已加入五頁及共用樣式／互動。
