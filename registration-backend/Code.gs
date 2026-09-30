@@ -1,10 +1,11 @@
 const SETTINGS = Object.freeze({
   sender: 'teacher_lu@creativstacks.info',
+  notify: 'arway.lu@gmail.com',
   sheetName: '體驗課報名',
   lineUrl: 'https://lin.ee/7FoFpdM',
   privacyVersion: '2026-09-26-v1'
 });
-const HEADERS = ['報名時間','報名編號','小朋友名字','年級','學校','體驗課程','偏好時段','相關經驗','經驗補充','家長稱呼','家長手機','家長Email','其他安排需求','個資使用同意','同意條款版本','報名來源','聯絡進度','LINE已聯絡','確認信狀態','寄信時間','寄信錯誤','請求識別碼','資料指紋','寄信嘗試次數','最後嘗試時間','推薦人'];
+const HEADERS = ['報名時間','報名編號','小朋友名字','年級','學校','體驗課程','偏好時段','相關經驗','經驗補充','家長稱呼','家長手機','家長Email','其他安排需求','個資使用同意','同意條款版本','報名來源','聯絡進度','LINE已聯絡','確認信狀態','寄信時間','寄信錯誤','請求識別碼','資料指紋','寄信嘗試次數','最後嘗試時間','推薦人','管理員通知狀態','管理員通知時間','管理員通知錯誤','管理員通知嘗試次數','管理員最後嘗試時間'];
 const COURSE_NAMES = {essential:'簡易樂高機器人班',prime:'樂高機器人班',scratch:'Scratch 程式班','robot-python':'樂高機器人 Python 班',python:'Python 程式班',unsure:'由老師推薦課程'};
 const TIMES = ['平日下午','平日晚上','週六上午','週六下午','週日上午','週日下午','時間彈性，可討論'];
 const EXPERIENCES = ['沒有，想第一次試試','玩過樂高，尚未接觸程式','學過機器人或 Scratch','學過 Python 或其他文字程式','其他經驗'];
@@ -26,6 +27,7 @@ function sheet_(){
   if(!id)throw new Error('尚未設定收件試算表');
   const sheet=SpreadsheetApp.openById(id).getSheetByName(SETTINGS.sheetName);
   if(!sheet)throw new Error('找不到報名工作表');
+  if(sheet.getMaxColumns()<HEADERS.length)sheet.insertColumnsAfter(sheet.getMaxColumns(),HEADERS.length-sheet.getMaxColumns());
   const headers=sheet.getRange(1,1,1,HEADERS.length).getValues()[0];
   // Add the optional field after existing columns without shifting mail/status indexes.
   if(headers[25]==='' && JSON.stringify(headers.slice(0,25))===JSON.stringify(HEADERS.slice(0,25))){
@@ -34,6 +36,10 @@ function sheet_(){
     sheet.setColumnWidth(26,240);
     sheet.getRange(2,26,sheet.getMaxRows()-1,1).setNumberFormat('@');
     headers[25]='推薦人';
+  }
+  if(JSON.stringify(headers.slice(0,26))===JSON.stringify(HEADERS.slice(0,26)) && headers.slice(26).every(v=>v==='')){
+    sheet.getRange(1,27,1,5).setValues([HEADERS.slice(26)]).setFontWeight('bold').setBackground('#eef0f3');
+    headers.splice(26,5,...HEADERS.slice(26));
   }
   if(JSON.stringify(headers)!==JSON.stringify(HEADERS))throw new Error('報名表欄位已變更，請聯絡管理者');
   return sheet;
@@ -110,7 +116,7 @@ function submitApplication(raw){
     if(todayRows.filter(r=>r[11]===d.email).length>=3)return {ok:false,message:'此信箱今天已送出多份報名；如需補充或更正，請透過 LINE 聯絡我們。'};
     if(todayRows.length>=100)return {ok:false,message:'線上報名暫停收件，請透過官方 LINE 聯絡我們。'};
     const id='CS-'+Utilities.formatDate(new Date(),'Asia/Taipei','yyyyMMdd')+'-'+Utilities.getUuid().slice(0,8).toUpperCase();
-    const row=[new Date(),id,d.childName,d.grade+' 年級',d.school,COURSE_NAMES[d.course],d.preferredTimes.join('、'),d.experience,d.experienceNotes,d.parentName,d.phone,d.email,d.notes,'已同意',SETTINGS.privacyVersion,'體驗課報名頁','待聯絡',false,'待寄送','','',d.submissionId,fingerprint,0,'',d.referrer].map(cell_);
+    const row=[new Date(),id,d.childName,d.grade+' 年級',d.school,COURSE_NAMES[d.course],d.preferredTimes.join('、'),d.experience,d.experienceNotes,d.parentName,d.phone,d.email,d.notes,'已同意',SETTINGS.privacyVersion,'體驗課報名頁','待聯絡',false,'待寄送','','',d.submissionId,fingerprint,0,'',d.referrer,'待寄送','','',0,''].map(cell_);
     sheet.appendRow(row);
     SpreadsheetApp.flush();
     CacheService.getScriptCache().remove('form:'+d.token);
@@ -119,6 +125,7 @@ function submitApplication(raw){
   finally{lock.releaseLock();}
   // The registration is durable before email is attempted.
   try{result.emailStatus=sendForId_(result.registrationId)?'sent':'pending';}catch(e){}
+  try{sendForId_(result.registrationId,true);}catch(e){}
   return result;
 }
 function escape_(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
@@ -128,7 +135,8 @@ function mailForRow_(r){
   const htmlBody='<div style="background:#f5f7fa;padding:30px 12px;font-family:Arial,sans-serif;color:#152640;line-height:1.8"><div style="max-width:560px;margin:auto;background:white;border-radius:18px;overflow:hidden"><div style="padding:28px 32px;background:#152640;color:white;font-size:20px;font-weight:bold">創意方塊<span style="font-size:13px;display:block;font-weight:normal">機器人教室 · 免費體驗</span></div><div style="padding:30px 32px"><p style="color:#b94413;font-size:13px">WE HAVE YOUR REGISTRATION</p><h1 style="font-size:27px;line-height:1.4">報名已收到，<br>請加入 LINE 安排體驗時間。</h1><p>'+escape_(r[9])+' 您好：<br>謝謝您為 '+escape_(r[2])+' 報名體驗課！</p><div style="background:#f5f7fa;padding:18px;border-radius:10px;font-size:14px">報名編號：'+escape_(r[1])+'<br>體驗課程：'+escape_(r[5])+'<br>偏好時段：'+escape_(r[6])+'</div><p>請加入官方 LINE，<b>並主動傳訊息告知孩子的名字</b>，讓老師為您安排課程與時間。</p><p style="text-align:center;margin:26px 0"><a href="'+SETTINGS.lineUrl+'" style="display:inline-block;background:#087e42;color:white;padding:13px 18px;border-radius:9px;text-decoration:none;font-weight:bold">加入 LINE，聯繫安排體驗課 ↗</a></p><p style="font-size:13px;color:#637083">加入後，可複製這段訊息：</p><blockquote style="margin:0;border-left:3px solid #e77838;padding:12px 16px;background:#fff7f1">'+escape_(message)+'</blockquote><p style="font-size:13px;color:#637083;margin-top:24px">此信代表已收到報名意願。實際課程、日期與時間需經老師確認，才算完成預約。</p><hr style="border:0;border-top:1px solid #dce2ea;margin:24px 0"><p style="font-size:13px">創意方塊機器人教室<br>台北市萬華區莒光路347巷20號1樓<br><a href="https://maps.app.goo.gl/Wwa9s3u1zihoFzgVA">Google 地圖・查看位置與導航</a></p></div></div></div>';
   return {to:r[11],subject:'【創意方塊】已收到體驗課報名｜請加入 LINE 安排時間',body,htmlBody,name:'創意方塊機器人教室',replyTo:SETTINGS.sender};
 }
-function sendForId_(id){
+function sendForId_(id,admin=false){
+  const status=admin?26:18, attempts=admin?29:23;
   assertSender_();
   const lock=LockService.getScriptLock();
   if(!lock.tryLock(5000))return false;
@@ -139,19 +147,19 @@ function sendForId_(id){
     const index=rows.findIndex(r=>r[1]===id);
     if(index<0)return false;
     const r=rows[index], row=index+2;
-    if(r[18]==='已寄出')return true;
-    if(!['待寄送','待重試'].includes(r[18])||Number(r[23])>=3||MailApp.getRemainingDailyQuota()<1)return false;
-    sheet.getRange(row,19).setValue('寄送中');
-    sheet.getRange(row,24,1,2).setValues([[Number(r[23])+1,new Date()]]);
+    if(r[status]==='已寄出')return true;
+    if(!['待寄送','待重試'].includes(r[status])||Number(r[attempts])>=3||MailApp.getRemainingDailyQuota()<1)return false;
+    sheet.getRange(row,status+1).setValue('寄送中');
+    sheet.getRange(row,attempts+1,1,2).setValues([[Number(r[attempts])+1,new Date()]]);
     SpreadsheetApp.flush();
     try{
-      MailApp.sendEmail(mailForRow_(r));
+      MailApp.sendEmail(admin?adminMailForRow_(r):mailForRow_(r));
     }catch(e){
-      sheet.getRange(row,19,1,3).setValues([[Number(r[23])+1>=3?'待人工確認':'待重試','',String(e.message).slice(0,500)]]);
+      sheet.getRange(row,status+1,1,3).setValues([[Number(r[attempts])+1>=3?'待人工確認':'待重試','',String(e.message).slice(0,500)]]);
       return false;
     }
     // If delivery succeeded but recording fails, keep the uncertain state for manual review.
-    sheet.getRange(row,19,1,3).setValues([['已寄出',new Date(),'']]);
+    sheet.getRange(row,status+1,1,3).setValues([['已寄出',new Date(),'']]);
     SpreadsheetApp.flush();
     return true;
   }finally{lock.releaseLock();}
@@ -163,12 +171,17 @@ function processMailQueue(){
   const rows=sheet.getRange(2,1,n,HEADERS.length).getValues();
   const queued=rows.filter(r=>['待寄送','待重試'].includes(r[18])).slice(0,15);
   queued.forEach(r=>sendForId_(r[1]));
+  rows.filter(r=>['待寄送','待重試'].includes(r[26])).slice(0,15).forEach(r=>sendForId_(r[1],true));
   // A interrupted send has an unknown outcome. Flag it for manual review, never automatically resend it.
   const lock=LockService.getScriptLock();
   if(!lock.tryLock(5000))return;
   try{
     const fresh=sheet.getRange(2,1,sheet.getLastRow()-1,HEADERS.length).getValues();
     fresh.forEach((r,i)=>{
+      if(r[26]==='寄送中'&&r[30] instanceof Date&&Date.now()-r[30].getTime()>900000){
+        sheet.getRange(i+2,27).setValue('待人工確認');
+        sheet.getRange(i+2,29).setValue('前次通知寄送中斷，請先確認寄件紀錄再決定是否重寄。');
+      }
       if(r[18]==='寄送中'&&r[24] instanceof Date&&Date.now()-r[24].getTime()>900000){
         sheet.getRange(i+2,19).setValue('待人工確認');
         sheet.getRange(i+2,21).setValue('前次寄送中斷，請先確認寄件紀錄再決定是否重寄。');
@@ -195,5 +208,22 @@ function doPost(e) {
 function updateRegistrationFields(){
   assertSender_();
   sheet_();
-  console.log("推薦人欄位已就緒");
+  console.log("報名與通知欄位已就緒");
+}
+
+function adminMailForRow_(r){
+  const sheetUrl='https://docs.google.com/spreadsheets/d/'+PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID')+'/edit';
+  const fields=[['報名編號',r[1]],['孩子姓名',r[2]],['年級',r[3]],['學校',r[4]],['體驗課程',r[5]],['偏好時段',r[6]],['相關經驗',r[7]],['經驗補充',r[8]],['家長稱呼',r[9]],['家長手機',String(r[10]).replace(/^'/,'')],['家長 Email',r[11]],['推薦人',r[25]],['其他安排需求',r[12]]];
+  const body='收到一份新的體驗課報名，請聯絡家長安排體驗。\n\n'+fields.map(([k,v])=>k+'：'+(v||'未填')).join('\n')+'\n\n開啟報名管理表：\n'+sheetUrl;
+  const htmlBody='<div style="font-family:Arial,sans-serif;color:#152640;line-height:1.8;max-width:640px;margin:auto"><h2>收到新的體驗課報名</h2><p>請聯絡家長確認課程與體驗時間。</p><table style="width:100%;border-collapse:collapse">'+fields.map(([k,v])=>'<tr><th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;white-space:nowrap">'+escape_(k)+'</th><td style="padding:8px;border-bottom:1px solid #ddd;white-space:pre-wrap">'+escape_(v||'未填')+'</td></tr>').join('')+'</table><p><a href="'+escape_(sheetUrl)+'">開啟報名管理表 →</a></p></div>';
+  return {to:SETTINGS.notify,subject:'【創意方塊｜新體驗報名】'+String(r[2]).replace(/[\r\n]/g,' ')+'｜'+r[5],body,htmlBody,name:'創意方塊報名通知',replyTo:r[11]};
+}
+
+function sendAdminNotificationTest(){
+  assertSender_();sheet_();
+  const r=Array(HEADERS.length).fill('');
+  r[1]='SYSTEM-TEST';r[2]='系統測試（非正式報名）';r[3]='3 年級';r[4]='測試學校';r[5]='Scratch 程式班';r[6]='週六上午';r[7]='沒有，想第一次試試';r[9]='測試家長';r[10]='0900000000';r[11]=SETTINGS.notify;r[25]='測試小朋友的媽媽';
+  const mail=adminMailForRow_(r);mail.subject='【系統測試】創意方塊新報名通知已啟用';
+  MailApp.sendEmail(mail);
+  console.log('測試通知已寄送至 '+SETTINGS.notify+'，未新增正式報名。');
 }
