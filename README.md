@@ -38,4 +38,4 @@ node registration-backend/test-backend.mjs 可離線測試驗證、防重複、�
 
 ## 素材優化
 
-2026-10-01：照片使用640／1280 WebP及srcset，Logo另輸出128px；影片封面點擊後才嵌入 YouTube privacy-enhanced 播放器，讓 YouTube 處理自適應串流。原始素材與壓縮 MP4 都保留。詳見memory/site-design-spec.md第16、17節。
+2026-10-01：照片使用640／1280 WebP及srcset，Logo另輸出128px；影片使用壓縮 MP4，封面點擊後才下載。原始素材保留。詳見memory/site-design-spec.md第16節，重建腳本scripts/optimize-media.py。

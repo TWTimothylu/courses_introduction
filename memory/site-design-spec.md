@@ -309,6 +309,6 @@ Hero桌面1.1fr/1fr，gap56px；h1 clamp(34px,3.8vw,52px)。主要學習區三�
 - scripts/optimize-media.py可重建優化素材，需要Pillow及.openai/ffmpeg.exe；FFmpeg來自imageio-ffmpeg 0.6.0官方PyPI套件，工具及中間圖不入庫。
 - 驗證：本機HTTP請求紀錄確認點播前0筆MP4；兩支影片點播readyState4、currentTime增加，互斥播放正常。390px手機無橫向溢出、封面及Logo正常。七頁資產引用及faststart結構通過檢查。未實測行動網路秒數，不宣稱速度提升固定倍數。
 
-## 17. YouTube 延後嵌入（2026-10-01）
+## 17. 串流平台決策（2026-10-01）
 
-為改善 GitHub Pages 固定 MP4 在部分網路下的緩衝，首頁與 Prime／Scratch 詳情頁改用使用者提供的 YouTube Shorts。仍先顯示本機封面，只有點擊後才建立 YouTube privacy-enhanced (`youtube-nocookie.com`) iframe，避免首頁初始就向 YouTube 請求影片。映射：robot＝`IH5aCnKfEhE`、scratch＝`-ZPYLjzbxyE`。播放器保留 `playsinline`、使用者觸發的自動播放、`rel=0`，並在開啟另一支時向已載入播放器送出暫停命令。原始和壓縮 MP4 保留於 assets，但不再由公開頁面引用；其封面仍用於點擊前畫面。實作來源為 scripts/media-markup.mjs、dist/media.js、dist/media.css；更換影片時必須同時更新此處映射與測試首頁及兩個詳情頁。
+曾以使用者提供的兩支 YouTube Shorts 測試延後嵌入，但使用者不希望影片顯示 YouTube 介面，因此正式網站已切回第16節的壓縮 MP4 播放器。YouTube 連結不納入正式頁面。未來若要改善特定網路下的播放緩衝，應優先評估 Cloudflare Stream 或 Vimeo 等可無品牌嵌入的串流服務，再替換 scripts/media-markup.mjs、dist/media.js、dist/media.css，並重新測試首頁與 Prime／Scratch 詳情頁。
