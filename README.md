@@ -38,4 +38,4 @@ node registration-backend/test-backend.mjs 可離線測試驗證、防重複、�
 
 ## 素材優化
 
-2026-10-01：照片使用640／1280 WebP及srcset，Logo另輸出128px；影片使用壓縮 MP4，封面點擊後才下載。原始素材保留。詳見memory/site-design-spec.md第16節，重建腳本scripts/optimize-media.py。
+2026-10-02：照片使用640／1280 WebP及srcset，Logo另輸出128px；影片使用壓縮 MP4。首頁與有影片的詳細頁會在主內容載入完成且瀏覽器閒置後，以先後順序預載影片；偵測到省流量或 2G 網路時維持點擊才載入。原始素材保留。詳見memory/site-design-spec.md第16節，重建腳本scripts/optimize-media.py。
