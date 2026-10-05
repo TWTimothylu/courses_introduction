@@ -1,6 +1,9 @@
 [
   {
     "id": "essential",
+    "photo": "essential-class",
+    "photoAlt": "孩子操作圖像程式，控制桌上的 LEGO SPIKE Essential 積木作品",
+    "photoCaption": "簡易樂高機器人班・課堂學習現場",
     "name": "簡易樂高機器人班",
     "tag": "第一台機器人",
     "line": "喜歡動手，就從積木開始。",

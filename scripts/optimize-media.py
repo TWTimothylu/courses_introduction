@@ -4,7 +4,7 @@ import subprocess,json
 root=Path(__file__).resolve().parents[1]
 a=root/'dist/assets'
 ff=root/'.openai/ffmpeg.exe'
-for name in ['class','competition']:
+for name in ['class','competition','essential-class']:
     with Image.open(a/(name+'.jpg')) as src:
         src=ImageOps.exif_transpose(src).convert('RGB')
         for width in [640,1280]:

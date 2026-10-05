@@ -313,6 +313,10 @@ Hero桌面1.1fr/1fr，gap56px；h1 clamp(34px,3.8vw,52px)。主要學習區三�
 
 曾以使用者提供的兩支 YouTube Shorts 測試延後嵌入，但使用者不希望影片顯示 YouTube 介面，因此正式網站已切回第16節的壓縮 MP4 播放器。YouTube 連結不納入正式頁面。未來若要改善特定網路下的播放緩衝，應優先評估 Cloudflare Stream 或 Vimeo 等可無品牌嵌入的串流服務，再替換 scripts/media-markup.mjs、dist/media.js、dist/media.css，並重新測試首頁與 Prime／Scratch 詳情頁。
 
+## 19. 簡易班專屬照片（2026-10-06）
+
+使用者提供 1000065211.jpg，指定替換簡易樂高機器人班照片。course-essential.html 的課堂現場現採 essential-class-640.webp／essential-class-1280.webp（23,554／57,450 bytes），保留 4:3 比例、srcset、lazy loading 與非同步解碼。原圖保存為 dist/assets/essential-class.jpg。scripts/course-details.json 新增 photo、photoAlt、photoCaption，產生器按各課設定選圖；其他課程與首頁共用照片維持原樣。optimize-media.py 可重新產生新照片尺寸。已重新產頁，確認只有簡易班 HTML 改動、語法及差異空白檢查通過。
+
 ## 18. 小班教學資訊（2026-10-01）
 
 使用者確認所有常態課程為 **6 人以下小班教學**。首頁由 app.js 於每張課程卡的課程短介紹後，顯示小班標籤。五個詳細頁由 build-course-pages.mjs 產生：Hero 標籤加入「6 人以下小班教學」，章節導覽新增「小班教學」，並在適合對象與學習內容之間放入深藍小班說明區。內容只說明可帶來的教學安排：及時看見卡關、依進度調整挑戰、提供作品回饋；不保證個別成果。course.css 於小螢幕將三個亮點卡改為單欄。
