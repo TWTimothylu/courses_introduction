@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 63,
-  "updatedAt": "2026-10-18T11:04:13.813Z",
+  "revision": 64,
+  "updatedAt": "2026-10-18T11:11:10.429Z",
   "settings": {
     "days": [
       3,
@@ -75,7 +75,7 @@
       "start": 1140,
       "duration": 90,
       "color": "teal",
-      "courseKey": ""
+      "courseKey": "python"
     },
     {
       "id": "9600e9f8-ff04-4d4c-a5d5-14c4cd3181ac",
