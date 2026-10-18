@@ -16,3 +16,5 @@
 
 /* Shared public weekly schedule */
 .schedule-section{padding-top:80px;padding-bottom:72px;scroll-margin-top:100px}.schedule-intro{color:#637083;margin:20px 0 0}.schedule-contact{color:#b94413;font-weight:bold;white-space:nowrap}.schedule-note{font-size:13px;color:#637083;line-height:1.8;margin-top:24px;max-width:850px}.schedule-section .section-heading{gap:24px}.schedule-section course-schedule{display:block;margin-top:28px}header nav{gap:20px}@media(max-width:1000px){header nav{gap:12px;font-size:14px}}@media(max-width:650px){.schedule-section{padding-top:52px;padding-bottom:48px}.schedule-section .section-heading{align-items:start;flex-direction:column}}
+
+.course-card-photo{margin:0;background:#f5f7fa}.course-card-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}.course-card-photo figcaption{font-size:12px;color:#637083;padding:10px 24px;line-height:1.5}.course-card-photo+.course-top{border-radius:0}

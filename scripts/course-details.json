@@ -48,7 +48,22 @@
       "孩子還不會打程式，可以參加嗎？",
       "課程使用圖像式指令，孩子可以從操作與組裝開始。老師會依孩子的年級、經驗與學習狀況協助確認班別。"
     ],
-    "related": "prime"
+    "related": "prime",
+    "galleryNote": "簡易樂高機器人班・課堂實拍",
+    "gallery": [
+      {
+        "asset": "essential-build",
+        "alt": "孩子在電腦與積木作品之間操作、測試",
+        "caption": "從圖像指令，讓作品動起來。",
+        "source": "簡易樂高機器人班/PA092263.jpg"
+      },
+      {
+        "asset": "essential-project",
+        "alt": "桌上的樂高積木機構作品特寫",
+        "caption": "每個小零件，都能組成新的想法。",
+        "source": "簡易樂高機器人班/PA102316.jpg"
+      }
+    ]
   },
   {
     "id": "prime",
@@ -97,7 +112,22 @@
       "和簡易樂高機器人班有什麼不同？",
       "簡易班使用 SPIKE Essential 與圖像指令；這門課使用 SPIKE Prime 與積木式程式，著重機構、程式控制與任務設計。"
     ],
-    "related": "essential"
+    "related": "essential",
+    "galleryNote": "樂高機器人課堂實拍",
+    "gallery": [
+      {
+        "asset": "prime-build",
+        "alt": "孩子近距離觀察手中的樂高機器人",
+        "caption": "仔細觀察機構，思考下一次調整。",
+        "source": "進階樂高機器人班/PA102320.jpg"
+      },
+      {
+        "asset": "prime-test",
+        "alt": "孩子在桌前操作樂高機器人作品",
+        "caption": "親手測試，看看作品如何回應。",
+        "source": "進階樂高機器人班/20260620_142949.jpg"
+      }
+    ]
   },
   {
     "id": "scratch",
@@ -146,7 +176,22 @@
       "Scratch 是在玩遊戲，還是在學程式？",
       "課程以製作遊戲為學習方式。孩子會設計角色與互動，組合程式指令，並透過測試和修改練習問題拆解。"
     ],
-    "related": "python"
+    "related": "python",
+    "galleryNote": "Scratch 課堂實拍",
+    "gallery": [
+      {
+        "asset": "scratch-create",
+        "alt": "孩子在筆電上操作 Scratch 角色與程式",
+        "caption": "角色與互動，從自己的想法開始。",
+        "source": "Scratch/PA102340.jpg"
+      },
+      {
+        "asset": "scratch-design",
+        "alt": "孩子使用繪圖板在電腦上創作",
+        "caption": "把想像畫出來，再加入互動。",
+        "source": "Scratch/PA102398.jpg"
+      }
+    ]
   },
   {
     "id": "robot-python",
@@ -194,7 +239,22 @@
       "和 Python 程式班該怎麼選？",
       "這門課以實體機器人為主，連結機構、感測器與動作控制；Python 程式班則以電腦上的小遊戲、工具與資料處理為主。"
     ],
-    "related": "python"
+    "related": "python",
+    "galleryNote": "機器人課堂情境，非 Python 課堂實拍",
+    "gallery": [
+      {
+        "asset": "robot-build",
+        "alt": "孩子動手組裝桌上的樂高機器人",
+        "caption": "從動手組裝，認識機器人的結構。",
+        "source": "進階樂高機器人班/PA102302.jpg"
+      },
+      {
+        "asset": "robot-code",
+        "alt": "孩子在筆電上操作積木式程式並測試機器人",
+        "caption": "觀察程式與機器人如何配合。",
+        "source": "進階樂高機器人班/PA112414.jpg"
+      }
+    ]
   },
   {
     "id": "python",
@@ -242,6 +302,21 @@
       "需要準備電腦嗎？",
       "需要自備 Windows 或 macOS 筆電。若不確定現有設備是否適合，可先透過 LINE 與教室確認。"
     ],
-    "related": "robot-python"
+    "related": "robot-python",
+    "galleryNote": "Scratch 課堂情境，非 Python 課堂實拍",
+    "gallery": [
+      {
+        "asset": "coding-space",
+        "alt": "孩子在教室的筆電前操作 Scratch 程式",
+        "caption": "專注操作，把想法一步步做出來。",
+        "source": "Scratch/PA102341.jpg"
+      },
+      {
+        "asset": "coding-practice",
+        "alt": "孩子坐在教室筆電前練習 Scratch",
+        "caption": "在嘗試與修改中，累積創作經驗。",
+        "source": "Scratch/PA072258.jpg"
+      }
+    ]
   }
 ]
