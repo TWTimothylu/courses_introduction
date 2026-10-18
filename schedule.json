@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 64,
-  "updatedAt": "2026-10-18T11:11:10.429Z",
+  "revision": 65,
+  "updatedAt": "2026-10-18T11:28:29.647Z",
   "settings": {
     "days": [
       3,
@@ -118,6 +118,15 @@
       "title": "比賽集訓班",
       "day": 7,
       "start": 810,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "open-class"
+    },
+    {
+      "id": "409dd4fe-c6fb-4e6d-93f0-1d3b38cebc1a",
+      "title": "可開班",
+      "day": 3,
+      "start": 540,
       "duration": 90,
       "color": "teal",
       "courseKey": "open-class"
