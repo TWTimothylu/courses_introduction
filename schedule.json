@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 73,
-  "updatedAt": "2026-10-18T11:29:39.525Z",
+  "revision": 74,
+  "updatedAt": "2026-10-18T11:29:43.566Z",
   "settings": {
     "days": [
       3,
@@ -133,7 +133,7 @@
     },
     {
       "id": "4160cd86-02b4-4801-bfbb-bd9423d6ab41",
-      "title": "可開班",
+      "title": "開放報名，一人可開班",
       "day": 5,
       "start": 900,
       "duration": 90,
