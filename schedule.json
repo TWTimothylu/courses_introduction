@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 74,
-  "updatedAt": "2026-10-18T11:29:43.566Z",
+  "revision": 75,
+  "updatedAt": "2026-10-18T11:31:32.037Z",
   "settings": {
     "days": [
       3,
@@ -138,7 +138,7 @@
       "start": 900,
       "duration": 90,
       "color": "teal",
-      "courseKey": ""
+      "courseKey": "open-class"
     }
   ]
 }
