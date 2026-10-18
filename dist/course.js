@@ -35,3 +35,9 @@
  function schedule(){if(!queued){queued=true;requestAnimationFrame(update);}}
  addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);addEventListener('load',schedule);new ResizeObserver(schedule).observe(document.querySelector('main'));update();
 })();
+// Manual exploration tabs: keyboard and touch share the same selection state.
+document.querySelectorAll('.explore-card').forEach(card=>{
+ const tabs=[...card.querySelectorAll('[role=tab]')],panels=[...card.querySelectorAll('[role=tabpanel]')];
+ function select(index,focus=false){tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;panels[i].hidden=i!==index;});card.querySelector('.explore-marker').textContent='0'+(index+1)+' · '+panels[index].dataset.marker;if(focus)tabs[index].focus();}
+ tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>select(index));tab.addEventListener('keydown',event=>{let next;if(event.key==='ArrowRight')next=(index+1)%tabs.length;if(event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;if(next!==undefined){event.preventDefault();select(next,true);}});});
+});
