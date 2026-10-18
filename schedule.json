@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "revision": 62,
+  "updatedAt": "2026-10-18T06:44:22.910Z",
+  "settings": {
+    "days": [
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "start": 540,
+    "end": 1230
+  },
+  "courses": [
+    {
+      "id": "bd9a3d21-e585-4a5b-9ba0-5844257589cb",
+      "title": "樂高機器人班",
+      "day": 6,
+      "start": 540,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "essential"
+    },
+    {
+      "id": "86fdc65f-7a1f-4b54-bf93-8524df31cf5e",
+      "title": "Scratch程式",
+      "day": 6,
+      "start": 660,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "scratch"
+    },
+    {
+      "id": "89391834-7e7b-4730-9b11-dbf95238a12e",
+      "title": "樂高機器人",
+      "day": 6,
+      "start": 810,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "prime"
+    },
+    {
+      "id": "5c47460e-03b1-43b4-bad7-6e09f41fb089",
+      "title": "Scratch",
+      "day": 3,
+      "start": 1020,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "scratch"
+    },
+    {
+      "id": "677af321-ff4f-431d-9dd6-0ab3dad69b57",
+      "title": "Python線上課",
+      "day": 4,
+      "start": 1050,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "python"
+    },
+    {
+      "id": "9e08f920-164c-42a9-87e4-dd350083556d",
+      "title": "樂高機器人",
+      "day": 5,
+      "start": 1020,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "prime"
+    },
+    {
+      "id": "0a8b78ec-8cbd-4a7e-91b1-f7595ec64680",
+      "title": "Python",
+      "day": 5,
+      "start": 1140,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": ""
+    },
+    {
+      "id": "9600e9f8-ff04-4d4c-a5d5-14c4cd3181ac",
+      "title": "Scratch",
+      "day": 6,
+      "start": 930,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "scratch"
+    },
+    {
+      "id": "13210790-1348-4e50-83c1-e3a89f73330b",
+      "title": "Python",
+      "day": 7,
+      "start": 540,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": ""
+    },
+    {
+      "id": "74d36c24-a90f-4f90-a510-12864b754890",
+      "title": "樂高機器人",
+      "day": 7,
+      "start": 660,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "prime"
+    },
+    {
+      "id": "53334971-385f-47fd-be85-5b639ff411bb",
+      "title": "Python",
+      "day": 7,
+      "start": 930,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "python"
+    },
+    {
+      "id": "dd4a4ec5-bc48-4796-91fd-1156f500a8d8",
+      "title": "比賽集訓班",
+      "day": 7,
+      "start": 810,
+      "duration": 90,
+      "color": "teal",
+      "courseKey": "open-class"
+    }
+  ]
+}
