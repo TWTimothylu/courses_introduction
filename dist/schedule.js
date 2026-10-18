@@ -23,8 +23,7 @@ class CourseSchedule extends HTMLElement {
     const timeout=setTimeout(()=>controller.abort(),10000);
     try{
       const url=new URL(source,location.href);
-      // A fresh CDN key each polling window avoids repeatedly reading a cached snapshot.
-      url.searchParams.set('schedule-check',String(Math.floor(Date.now()/15000)));
+      // no-store bypasses browser cache; GitHub's upstream CDN can still lag by minutes.
       const local=['localhost','127.0.0.1','[::1]'];
       if(!local.includes(location.hostname)&&(url.protocol!=='https:'||local.includes(url.hostname)||/YOUR-|example\./i.test(url.hostname)))throw Error('Invalid source');
       const response=await fetch(url,{credentials:'omit',cache:'no-store',signal:controller.signal});

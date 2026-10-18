@@ -28,6 +28,6 @@
 - scripts/test-schedule.mjs：白名單、時間邊界、重複 ID、未分類／可開班、重疊時段。
 - 管理端原有 16 項測試及新增 3 項 public-sync.test.mjs 通過。新增測試使用隔離暫存 Git 倉庫，不改正式排課。
 - 本機瀏覽器已讀取 GitHub 真實 12 個時段，詳情 essential 篩出 1 個對應時段，另保留可開班區。390px 手機實測無水平溢出。
-- 正式資料不變地重新儲存至 revision 63，確認後端上傳成功；CDN 可見時間另於驗收補記。
+- 正式資料不變地重新儲存至 revision 63，確認後端上傳成功；GitHub raw 回應 Cache-Control:max-age=300，主要網址在首次短時間驗收仍讀到 62，refs/heads 路徑於 19:06 已讀到 63。不可宣稱即時或保證 15 秒；須待主要網址快取更新後核對。
 - 本次不處理原有 registration-backend/Code.gs 與 site-design-spec.md 的寄信草稿。
 - 修改管理端後更新其 PROJECT_MEMORY.md；修改網站需重新發布 main。只變動課表不需重新發布網站。
