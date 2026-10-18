@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "revision": 70,
-  "updatedAt": "2026-10-18T11:28:52.353Z",
+  "revision": 71,
+  "updatedAt": "2026-10-18T11:28:56.316Z",
   "settings": {
     "days": [
       3,
@@ -134,8 +134,8 @@
     {
       "id": "4160cd86-02b4-4801-bfbb-bd9423d6ab41",
       "title": "可開班",
-      "day": 3,
-      "start": 540,
+      "day": 4,
+      "start": 690,
       "duration": 90,
       "color": "teal",
       "courseKey": ""
