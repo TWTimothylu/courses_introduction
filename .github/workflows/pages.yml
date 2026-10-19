@@ -18,12 +18,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
+      - name: Build and validate searchable pages
+        run: |
+          node scripts/build-course-pages.mjs
+          node scripts/test-seo.mjs
       - uses: actions/configure-pages@v5
       - name: Prepare public website
         run: |
           mkdir _site
           cp -r dist/assets _site/assets
-          cp dist/index.html dist/style.css dist/app.js dist/trial.html dist/trial.css dist/trial.js dist/course-*.html dist/course.css dist/course.js dist/media.css dist/media.js dist/schedule*.js dist/schedule*.mjs dist/schedule.css _site/
+          cp dist/index.html dist/style.css dist/app.js dist/trial.html dist/trial.css dist/trial.js dist/course-*.html dist/course.css dist/course.js dist/media.css dist/media.js dist/schedule*.js dist/schedule*.mjs dist/schedule.css dist/sitemap.xml _site/
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site

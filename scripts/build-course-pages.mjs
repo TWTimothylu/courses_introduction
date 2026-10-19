@@ -23,3 +23,5 @@ const html='<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><met
 await fs.writeFile(new URL('dist/course-'+c.id+'.html',root),html.replace("</section><section id=\"learning\"","</section>"+smallClass+"<section id=\"learning\""));
 }
 console.log('Built five static course detail pages.');
+
+await import('./build-seo.mjs');
