@@ -1,3 +1,14 @@
+# 教室與營隊統一網站
+
+2026-10-28：營隊已納入本儲存庫，固定入口為 https://twtimothylu.github.io/courses_introduction/camps/ 。
+
+- 營隊來源：camps/2027-winter；營隊總覽：camps/index.html。
+- 統一建置：node scripts/build-site.mjs；公開發布目錄：_site。
+- 本機完整預覽：node scripts/serve-site.mjs。
+- 原 dist 是常態課維護來源，不可刪除；營隊 dist 與 _site 是產物。
+- 常態課與營隊的既有報名後台、課表來源維持不變。
+- 詳見 memory/camp-integration.md。下方歷史說明中的單站發布流程已由本節取代。
+
 # 創意方塊｜課程介紹與體驗報名
 
 正式網站：https://twtimothylu.github.io/courses_introduction/

@@ -9,3 +9,6 @@ registration-backend/*.xlsx
 registration-backend/*.ndjson
 registration-backend/sheet-preview.png
 dist/setup-local.html
+
+# Assembled public site (source dist must be preserved)
+_site/
