@@ -24,3 +24,7 @@
 主站及營隊正式網址改為 https://www.creativstacks.info/ 與其 camps/ 路徑。Squarespace 根網域轉送至 HTTPS www 並保留路徑；使用者已完成 GitHub 網域驗證、DNS 與 Enforce HTTPS。
 後台來源信件網址同步更新；雲端Apps Script維持原部署，舊信連結仍經舊站轉址可用。前端收件端點、像素與課表資料來源維持不變。網站地圖、標準網址、分享資訊、robots與已知舊頁轉址由建置流程維護。
 本機SEO／課表／全站109檔案檢查、14項營隊測試、轉址參數測試通過。未提交真實報名或觸發寄信。
+
+### 新網域發布驗收
+主站2bc7092（Actions 40612245753）與舊營隊45b6e46（Actions 40612258358）皆發布成功。正式sitemap的12頁HTTP200且canonical精確相符；robots、已知Google Sites舊Python網址、原專案前綴相容網址及營隊報名頁皆HTTP200。
+瀏覽器實測舊Python課程轉到新頁並保留utm；舊營隊報名轉到新網域並預選小小樂高工程師、早鳥4700元。HTTP營隊網址實測301到HTTPS。未提交報名。Search Console仍未登入或提交，不宣稱Google已更新索引。
