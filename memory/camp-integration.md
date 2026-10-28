@@ -19,3 +19,8 @@
 - 瀏覽器確認正式首頁可進入營隊專區。手機預覽確認報名頁無水平溢出，預選小小樂高工程師與早鳥4700元正確。
 - 正式舊 register.html?camp=essential&utm_source=migration-check#main 已跳至新報名頁，課程、追蹤參數與錨點保留。未送出報名或觸發通知，未重新驗收 Meta 收件。
 - 原圖處理工具保留來源素材在工作區營隊課程，亦支援 --source-dir；通知信預覽寫入本營隊 previews/，不公開發布。
+
+## 自訂網域切換（2026-10-28）
+主站及營隊正式網址改為 https://www.creativstacks.info/ 與其 camps/ 路徑。Squarespace 根網域轉送至 HTTPS www 並保留路徑；使用者已完成 GitHub 網域驗證、DNS 與 Enforce HTTPS。
+後台來源信件網址同步更新；雲端Apps Script維持原部署，舊信連結仍經舊站轉址可用。前端收件端點、像素與課表資料來源維持不變。網站地圖、標準網址、分享資訊、robots與已知舊頁轉址由建置流程維護。
+本機SEO／課表／全站109檔案檢查、14項營隊測試、轉址參數測試通過。未提交真實報名或觸發寄信。

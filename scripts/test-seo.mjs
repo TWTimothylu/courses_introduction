@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../dist/',import.meta.url));
-const base='https://twtimothylu.github.io/courses_introduction/';
+const base='https://www.creativstacks.info/';
 const courses=JSON.parse(fs.readFileSync(new URL('./course-details.json',import.meta.url),'utf8'));
 const files=['index.html','trial.html',...courses.map(c=>'course-'+c.id+'.html')];
 const sitemap=fs.readFileSync(root+'sitemap.xml','utf8');

@@ -17,10 +17,11 @@ for(const name of fs.readdirSync(path.join(root,'dist'))){
 fs.mkdirSync(path.join(out,'camps'),{recursive:true});
 fs.copyFileSync(path.join(root,'camps/index.html'),path.join(out,'camps/index.html'));
 fs.cpSync(path.join(root,'camps/2027-winter/dist'),path.join(out,'camps/2027-winter'),{recursive:true});
-const base='https://twtimothylu.github.io/courses_introduction/';
+const base='https://www.creativstacks.info/';
 const campMap=fs.readFileSync(path.join(out,'camps/2027-winter/sitemap.xml'),'utf8');
 const urls=campMap.match(/<url>[\s\S]*?<\/url>/g).join('\n');
 const map=fs.readFileSync(path.join(out,'sitemap.xml'),'utf8').replace('</urlset>',`<url><loc>${base}camps/</loc></url>\n${urls}\n</urlset>`);
 fs.writeFileSync(path.join(out,'sitemap.xml'),map);
 fs.writeFileSync(path.join(out,'.nojekyll'),'');
+run('scripts/build-legacy.mjs');
 console.log('Complete classroom website assembled in _site.');

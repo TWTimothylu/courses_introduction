@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const read=p=>fs.readFileSync(root+p,'utf8'),write=(p,s)=>fs.writeFileSync(root+p,s);
 const courses=JSON.parse(read('scripts/course-details.json'));
-const base='https://twtimothylu.github.io/courses_introduction/';
+const base='https://www.creativstacks.info/';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const org={'@type':'EducationalOrganization','@id':base+'#organization',name:'創意方塊機器人教室',url:base,logo:base+'assets/brand-logo.png',address:{'@type':'PostalAddress',streetAddress:'莒光路347巷20號1樓',addressLocality:'萬華區',addressRegion:'台北市',addressCountry:'TW'}};
 const pages=[{file:'index.html',url:base,title:'台北萬華兒童程式・樂高機器人課程｜創意方塊',description:'創意方塊機器人教室位於台北萬華，提供國小至高中適齡的樂高機器人、Scratch 與 Python 課程，6 人以下小班教學。查看課程內容、費用、每週課表，預約免費體驗。',image:'class.jpg'},...courses.map(c=>({file:'course-'+c.id+'.html',url:base+'course-'+c.id+'.html',title:'台北萬華'+c.name+'｜'+c.grade.split('｜')[0]+'・創意方塊',description:'台北萬華'+c.name+'，適合'+c.grade.replace('｜','（')+'）。6 人以下小班教學。'+c.intro+'查看課程費用與每週課表，預約免費體驗。',image:'seo-'+c.id+'.jpg',course:c})),{file:'trial.html',url:base+'trial.html',title:'預約免費體驗｜台北萬華樂高・Scratch・Python｜創意方塊',description:'預約創意方塊機器人教室免費體驗，填寫孩子年級、想體驗的課程與偏好時段。送出後請加入官方 LINE，讓老師與您聯絡確認體驗安排。',image:'class.jpg'}];

@@ -1,4 +1,4 @@
-export const baseUrl='https://twtimothylu.github.io/courses_introduction/camps/2027-winter/';
+export const baseUrl='https://www.creativstacks.info/camps/2027-winter/';
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export function metadata(view,c){
  const url=baseUrl+(view==='course'?`course-${c.id}.html`:view==='register'?'register.html':'');

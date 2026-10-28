@@ -34,3 +34,8 @@ build-seo.mjs 內的正式網域、機構地址與分享圖需隨品牌資料同
 
 ## 2026-10-28 營隊整合
 正式根 sitemap 改由 scripts/build-site.mjs 在 _site 統合：原7頁＋營隊入口＋冬令營4頁，共12頁。原 dist/sitemap.xml 保持7頁供常態課單站檢查。營隊報名頁維持 noindex,follow。舊營隊各頁以 canonical 與瀏覽器轉址導向新站；非伺服器301。詳見 camp-integration.md。
+
+## 2026-10-28 自訂網域正式遷移（取代前述網址）
+正式根網址：https://www.creativstacks.info/ ，網站地圖：https://www.creativstacks.info/sitemap.xml 。12個收錄頁面、分享圖片與結構化資料均使用新網域。根目錄現可提供有效 robots.txt 並標示 sitemap。
+scripts/build-legacy.mjs 建立已知 Google Sites 五課程與課程總覽轉址、原 courses_introduction 前綴的頁面相容路徑，保留 query/hash；未知網址顯示有導覽的404。靜態轉址非伺服器301，不保證保留搜尋排名。
+舊營隊儲存庫改直接轉到新網域。Google Search Console 提交仍需帳號存取，本次不宣稱完成。
