@@ -18,3 +18,42 @@
 .schedule-section{padding-top:80px;padding-bottom:72px;scroll-margin-top:100px}.schedule-intro{color:#637083;margin:20px 0 0}.schedule-contact{color:#b94413;font-weight:bold;white-space:nowrap}.schedule-note{font-size:13px;color:#637083;line-height:1.8;margin-top:24px;max-width:850px}.schedule-section .section-heading{gap:24px}.schedule-section course-schedule{display:block;margin-top:28px}header nav{gap:20px}@media(max-width:1000px){header nav{gap:12px;font-size:14px}}@media(max-width:650px){.schedule-section{padding-top:52px;padding-bottom:48px}.schedule-section .section-heading{align-items:start;flex-direction:column}}
 
 .course-card-photo{margin:0;background:#f5f7fa}.course-card-photo img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover}.course-card-photo figcaption{font-size:12px;color:#637083;padding:10px 24px;line-height:1.5}.course-card-photo+.course-top{border-radius:0}
+
+/* Limited new-student campaign: hidden attributes must override layout styles. */
+[data-new-student-offer][hidden]{display:none!important}
+.offer-announcement{background:#152640;color:#fff;font-size:14px}
+.offer-announcement a{max-width:1184px;margin:auto;padding:12px 22px;display:flex;justify-content:center;align-items:center;gap:24px;color:inherit;text-decoration:none;flex-wrap:wrap}
+.offer-announcement strong{color:#ffd2ae;margin-left:14px}
+.offer-section{padding-top:24px;padding-bottom:42px;scroll-margin-top:24px}
+.offer-card{border:1px solid #eed8c5;border-radius:26px;overflow:hidden;display:grid;grid-template-columns:1.05fr 1fr;background:#fff8f1}
+.offer-summary{padding:40px}
+.offer-label{font-size:13px;font-weight:700;color:#a33d12;letter-spacing:1px;margin:0 0 20px}
+.offer-summary h2{font-size:clamp(28px,3vw,40px);line-height:1.35;margin:0 0 18px;letter-spacing:-1px}
+.offer-intro{color:#5e6877;margin:0 0 24px}
+.offer-price{margin:0;display:flex;flex-direction:column;gap:0}
+.offer-price>span{font-size:16px;font-weight:700}
+.offer-price strong{font-size:clamp(48px,5vw,64px);line-height:1.25;letter-spacing:-2px;color:#ad3f0e;white-space:nowrap}
+.offer-price small{font-size:20px;letter-spacing:0}
+.offer-saving{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#5e6877;font-size:14px;margin:10px 0 22px}
+.offer-saving b{color:#a33d12;background:#ffe8d5;border-radius:99px;padding:4px 12px}
+.offer-deadline{font-size:14px;line-height:1.9;margin-bottom:24px}
+.offer-actions{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.offer-actions .button{background:#b94413;color:white;font-size:16px}
+.offer-line{font-size:14px;font-weight:700;color:#152640;text-underline-offset:4px}
+.offer-details{background:#fff;padding:40px}
+.offer-details>h3{font-size:22px;margin:0 0 4px}
+.offer-duration{color:#5e6877;font-size:14px;margin:0 0 24px}
+.offer-slot{border:1px solid #e4e7ec;border-radius:16px;padding:20px;margin:0 0 16px}
+.offer-slot h4{font-size:18px;margin:0 0 12px}
+.offer-slot dl{margin:0;display:grid;gap:8px}
+.offer-slot dl>div{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.offer-slot dt{background:#f2f4f7;border-radius:6px;padding:3px 10px;font-size:14px}
+.offer-slot dd{margin:0;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums}
+.offer-rules{margin-top:24px;color:#5e6877;font-size:13px;line-height:1.8}
+.offer-rules h3{font-size:14px;color:#152640;margin:0 0 8px}
+.offer-rules ul{padding-left:19px;margin:0}
+.offer-rules li+li{margin-top:6px}
+.offer-course-link{display:block;background:#fff0e3;color:#9d390e;border-radius:10px;padding:12px 14px;margin:14px 0;font-size:14px;font-weight:700;text-decoration:none;line-height:1.7}
+.offer-course-link:hover{background:#ffe3cc;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:750px){.offer-card{grid-template-columns:1fr}.offer-summary,.offer-details{padding:28px}.offer-section{padding-top:8px}.offer-announcement a{gap:2px 12px;text-align:center;font-size:12px}.offer-announcement strong{margin-left:8px}}
+@media(max-width:380px){.offer-summary,.offer-details{padding:22px}.offer-slot{padding:16px}.offer-slot dd{font-size:16px}}

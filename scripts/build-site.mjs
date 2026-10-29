@@ -10,7 +10,7 @@ run('scripts/build.mjs',path.join(root,'camps/2027-winter'));
 const out=path.join(root,'_site');
 fs.rmSync(out,{recursive:true,force:true});
 fs.mkdirSync(out,{recursive:true});
-const allowed=/^(index\.html|style\.css|app\.js|trial\.(html|css|js)|course-[\w-]+\.html|course\.(css|js)|media\.(css|js)|schedule[\w.-]*\.(js|mjs|css)|sitemap\.xml)$/;
+const allowed=/^(index\.html|style\.css|app\.js|offer\.js|trial\.(html|css|js)|course-[\w-]+\.html|course\.(css|js)|media\.(css|js)|schedule[\w.-]*\.(js|mjs|css)|sitemap\.xml)$/;
 for(const name of fs.readdirSync(path.join(root,'dist'))){
  if(name==='assets'||allowed.test(name))fs.cpSync(path.join(root,'dist',name),path.join(out,name),{recursive:true});
 }
