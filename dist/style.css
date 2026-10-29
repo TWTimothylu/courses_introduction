@@ -57,3 +57,12 @@
 .offer-course-link:hover{background:#ffe3cc;text-decoration:underline;text-underline-offset:3px}
 @media(max-width:750px){.offer-card{grid-template-columns:1fr}.offer-summary,.offer-details{padding:28px}.offer-section{padding-top:8px}.offer-announcement a{gap:2px 12px;text-align:center;font-size:12px}.offer-announcement strong{margin-left:8px}}
 @media(max-width:380px){.offer-summary,.offer-details{padding:22px}.offer-slot{padding:16px}.offer-slot dd{font-size:16px}}
+
+.offer-countdown{margin:0 0 26px}
+.offer-countdown>p{font-size:14px;font-weight:700;margin:0 0 10px}
+.offer-countdown>p>span{font-size:12px;font-weight:400;color:#5e6877}
+.offer-clock{display:flex;gap:10px}
+.offer-clock>div{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:62px;padding:10px 12px;background:#152640;color:#fff;border-radius:12px}
+.offer-clock strong{font-size:28px;line-height:1.2;font-variant-numeric:tabular-nums}
+.offer-clock span{font-size:12px;color:#e4e9f1;margin-top:4px}
+@media(max-width:380px){.offer-clock{gap:7px}.offer-clock>div{min-width:0;flex:1;padding:10px 6px}.offer-clock strong{font-size:25px}}
