@@ -24,7 +24,7 @@ test('build exposes complete crawlable content and distinct metadata without Jav
  const map=fs.readFileSync('dist/sitemap.xml','utf8');assert.equal((map.match(/<loc>/g)||[]).length,4);assert.ok(!map.includes('register.html'));
  assert.ok(fs.readFileSync('dist/register.html','utf8').includes('noindex,follow'));
 });
-test('shared templates support interactive and timeless static pricing',()=>{
- for(const c of camps){assert.ok(renderCourse(c).includes('data-base-price'));assert.ok(card(c).includes('data-price-countdown'));assert.ok(renderCourse(c,undefined,true).includes('2026/11/1 23:59 前報名早鳥價'));}
+test('shared templates show regular prices without expired promotions',()=>{
+ for(const c of camps){assert.ok(renderCourse(c).includes('data-base-price'));for(const html of [card(c),renderCourse(c),renderCourse(c,undefined,true)]){assert.ok(html.includes('營隊費用'));assert.ok(!/早鳥|price-countdown|<del/.test(html));for(const p of c.plans)assert.ok(html.includes(p.price.toLocaleString('zh-TW')));}}
  assert.equal((renderHome(camps).match(/<article /g)||[]).length,3);
 });
