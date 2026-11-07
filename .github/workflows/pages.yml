@@ -27,6 +27,8 @@ jobs:
           node scripts/test-seo.mjs
           node scripts/test-schedule.mjs
           node scripts/test-site.mjs
+          node scripts/test-recaptcha.mjs
+          node registration-backend/test-backend.mjs
           cd camps/2027-winter
           npm test
       - uses: actions/configure-pages@v5

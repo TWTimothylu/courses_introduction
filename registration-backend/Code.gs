@@ -11,11 +11,10 @@ const TIMES = ['平日下午','平日晚上','週六上午','週六下午','週�
 const EXPERIENCES = ['沒有，想第一次試試','玩過樂高，尚未接觸程式','學過機器人或 Scratch','學過 Python 或其他文字程式','其他經驗'];
 
 function doGet(e) {
-  const template=HtmlService.createTemplateFromFile('Registration');
-  const configuredHome=PropertiesService.getScriptProperties().getProperty('HOME_URL') || '';
-  template.homeUrl=/^https:\/\//.test(configuredHome)?configuredHome:'https://www.creativstacks.info/常態課程介紹';
-  template.initialCourse=Object.prototype.hasOwnProperty.call(COURSE_NAMES,e && e.parameter && e.parameter.course)?e.parameter.course:'';
-  return template.evaluate().setTitle('預約免費體驗｜創意方塊機器人教室').addMetaTag('viewport','width=device-width, initial-scale=1');
+  if(e&&e.parameter&&e.parameter.action==='status')return ContentService.createTextOutput(JSON.stringify({ok:true,protection:'recaptcha-v2-20261107'})).setMimeType(ContentService.MimeType.JSON);
+  const course=Object.prototype.hasOwnProperty.call(COURSE_NAMES,e&&e.parameter&&e.parameter.course)?e.parameter.course:'';
+  const url='https://www.creativstacks.info/trial.html'+(course?'?course='+encodeURIComponent(course):'');
+  return HtmlService.createHtmlOutput('<!doctype html><html lang="zh-Hant"><body style="font-family:sans-serif;line-height:1.8;padding:32px"><h1>預約免費體驗</h1><p>請前往官方網站完成報名與「我不是機器人」驗證。</p><a target="_top" href="'+url+'">前往體驗課報名表</a></body></html>').setTitle('預約免費體驗｜創意方塊機器人教室').addMetaTag('viewport','width=device-width, initial-scale=1');
 }
 function getFormToken(){
   const token=Utilities.getUuid();
@@ -115,6 +114,7 @@ function submitApplication(raw){
     const todayRows=rows.filter(r=>r[0] instanceof Date&&Utilities.formatDate(r[0],'Asia/Taipei','yyyy-MM-dd')===today);
     if(todayRows.filter(r=>r[11]===d.email).length>=3)return {ok:false,message:'此信箱今天已送出多份報名；如需補充或更正，請透過 LINE 聯絡我們。'};
     if(todayRows.length>=100)return {ok:false,message:'線上報名暫停收件，請透過官方 LINE 聯絡我們。'};
+    try{verifyRecaptcha_(raw.recaptchaToken);}catch(error){return {ok:false,saved:false,message:error.message};}
     const id='CS-'+Utilities.formatDate(new Date(),'Asia/Taipei','yyyyMMdd')+'-'+Utilities.getUuid().slice(0,8).toUpperCase();
     const row=[new Date(),id,d.childName,d.grade+' 年級',d.school,COURSE_NAMES[d.course],d.preferredTimes.join('、'),d.experience,d.experienceNotes,d.parentName,d.phone,d.email,d.notes,'已同意',SETTINGS.privacyVersion,'體驗課報名頁','待聯絡',false,'待寄送','','',d.submissionId,fingerprint,0,'',d.referrer,'待寄送','','',0,''].map(cell_);
     sheet.appendRow(row);

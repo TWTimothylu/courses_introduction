@@ -1,16 +1,7 @@
-/** Basic automated-form abuse protection. Not a replacement for managed CAPTCHA. */
-function challenge_(){
- const id=Utilities.getUuid(),a=2+Math.floor(Math.random()*8),b=1+Math.floor(Math.random()*9);
- CacheService.getScriptCache().put('camp-challenge:'+id,JSON.stringify({answer:String(a+b),created:Date.now()}),1800);
- return json_({ok:true,challengeId:id,question:a+' + '+b+' = ?'});
-}
+/** Server-side bot checks; math challenges are retired. */
 function verifyChallenge_(v){
- if(v.website!==''||typeof v.challengeId!=='string'||!/^[a-f0-9-]{36}$/i.test(v.challengeId))throw Error('請重新載入驗證題目後再送出。');
- const cache=CacheService.getScriptCache(),key='camp-challenge:'+v.challengeId,raw=cache.get(key);
- if(!raw)throw Error('驗證已過期，請重新載入驗證題目。');
- const c=JSON.parse(raw);
- if(Date.now()-c.created<3000)throw Error('請稍候幾秒，再送出報名資料。');
- if(Date.now()-c.created>1800000||String(v.challengeAnswer).trim()!==c.answer){cache.remove(key);throw Error('驗證答案不正確或已過期，請重新作答。');}
+ if(v.website!=='')throw Error('無法受理此報名，請透過 LINE 聯絡老師。');
+ verifyRecaptcha_(v.recaptchaToken);
 }
 function emailKey_(value){
  const s=String(value||'').replace(/^'/,'').trim().toLowerCase(),parts=s.split('@');

@@ -1,6 +1,8 @@
+import {createCaptcha} from './recaptcha.js?v=20261107';
 (() => {
 const form=document.getElementById('trial-form'), button=document.getElementById('submit-button'), error=document.getElementById('form-error'), dialog=document.getElementById('success-dialog');
 const live=true;
+const captcha=createCaptcha(document.getElementById('registrationCaptcha'));
 const endpoint='https://script.google.com/macros/s/AKfycby8MyLk1o5kT-jGIM-r5MOn-UhGVIiGIB3mNmV9DZot7r4zs3UaqUYSjl6dADplrkh_Tg/exec';
 async function callBackend(action,data){
   const response=await fetch(endpoint,{method:'POST',credentials:'omit',redirect:'follow',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,data})});
@@ -42,13 +44,15 @@ data.phone=data.phone.replace(/[ -]/g,'');data.email=data.email.trim().toLowerCa
 if(!/^(09\d{8}|\+8869\d{8})$/.test(data.phone)){error.hidden=false;error.textContent='請確認手機號碼，例：0912-345-678。';form.elements.phone.focus();return;}
 Object.assign(data,{submissionId:requestId,token,startedAt,privacyVersion:'2026-09-26-v1',source:'體驗課報名頁'});
 if(!live){showReceipt({},data);return;}
+if(!captcha.token()){error.hidden=false;error.textContent='請先完成「我不是機器人」驗證。';return;}
+data.recaptchaToken=captcha.token();delete data['g-recaptcha-response'];
 busy=true;button.disabled=true;button.textContent='正在送出，請稍候…';
 callBackend('submit',data).then(result=>{
 busy=false;
 if(result && result.ok){showReceipt(result,data);}
-else {button.disabled=false;button.textContent='重新送出體驗報名 →';error.hidden=false;error.textContent=result?.message||'暫時無法完成報名，請稍後再試或加入 LINE 聯絡我們。';}
+else {captcha.reset();button.disabled=false;button.textContent='重新送出體驗報名 →';error.hidden=false;error.textContent=result?.message||'暫時無法完成報名，請稍後再試或加入 LINE 聯絡我們。';}
 }).catch(()=>{
-busy=false;button.disabled=false;button.textContent='重新送出體驗報名 →';error.hidden=false;error.textContent='連線中斷，尚未確認是否送出成功。請使用本頁重新送出；系統會依報名編號避免重複登記。';
+captcha.reset();busy=false;button.disabled=false;button.textContent='重新送出體驗報名 →';error.hidden=false;error.textContent='連線中斷，尚未確認是否送出成功。請使用本頁重新送出；系統會依報名編號避免重複登記。';
 });
 });
 dialog.querySelectorAll('.close,.dismiss').forEach(el=>el.addEventListener('click',()=>dialog.close()));

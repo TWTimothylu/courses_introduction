@@ -13,7 +13,7 @@ function setup(){
  if(!ScriptApp.getProjectTriggers().some(t=>t.getHandlerFunction()==='processNotifications'))ScriptApp.newTrigger('processNotifications').timeBased().everyMinutes(5).create();
  console.log('Setup complete; verify sharing is Restricted. Registration remains closed.');
 }
-function doGet(e){if(e&&e.parameter&&e.parameter.action==='challenge')return challenge_();return json_({ok:true,service:'camp2027',protection:'20261107b',open:PropertiesService.getScriptProperties().getProperty('REGISTRATION_OPEN')==='true'});}
+function doGet(e){return json_({ok:true,service:'camp2027',protection:'recaptcha-v2-20261107',open:PropertiesService.getScriptProperties().getProperty('REGISTRATION_OPEN')==='true'});}
 function json_(v){return ContentService.createTextOutput(JSON.stringify(v)).setMimeType(ContentService.MimeType.JSON);}
 function safe_(v){const s=String(v==null?'':v);return /^[=+@\-\t\r\n]/.test(s)?"'"+s:s;}
 function validate_(v){
@@ -45,11 +45,10 @@ function doPost(e){
  if(existing){if(existing[3]!==fingerprint)return json_({ok:false,message:'相同請求的資料已更動，請聯絡老師核對。'});return json_({ok:true,registrationId:existing[0],campName:existing[5],dateLabel:existing[8],planName:existing[7],total:existing[9]});}
  if(props.getProperty('REGISTRATION_OPEN')!=='true')return json_({ok:false,saved:false,message:'目前尚未開放或已暫停收件，請透過 LINE 洽詢。'});
  if(v.consentVersion!==props.getProperty('CONSENT_VERSION'))return json_({ok:false,saved:false,message:'規則版本已更新，請重新整理並閱讀。'});
- verifyChallenge_(v);checkAbuse_(v,rows);
+ checkAbuse_(v,rows);verifyChallenge_(v);
  const id='W27-'+Utilities.getUuid().slice(0,8).toUpperCase(),now=new Date().toISOString();
  const row=[id,now,v.requestId,fingerprint,c.id,c.name,p.id,p.name,c.dates.join(', '),valid.total,v.early.join(', '),v.child,String(v.grade),v.school,v.parent,v.phone,v.email,v.emergencyName,v.emergencyPhone,v.diet,v.notes,v.referral,v.experience,String(v.ability===true),v.consentVersion,now,c.id==='rc'?'知悉安排；待詳細活動同意':'不適用','待聯絡','待寄送',0,'','','待寄送',0,'',''];
  writing=true;sheet.appendRow(row.map(safe_));SpreadsheetApp.flush();
- try{CacheService.getScriptCache().remove('camp-challenge:'+v.challengeId);}catch(ignore){}
  return json_({ok:true,registrationId:id,campName:c.name,dateLabel:c.dates.join(', '),planName:p.name,total:valid.total});
  }catch(err){return json_({ok:false,saved:writing?undefined:false,message:writing?'收件結果尚未確認，請使用相同資料重試或聯絡老師。':'無法受理：'+String(err.message).slice(0,160)});}finally{if(lock)lock.releaseLock();}
 }
