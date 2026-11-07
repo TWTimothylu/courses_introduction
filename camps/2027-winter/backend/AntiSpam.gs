@@ -17,7 +17,7 @@ function emailKey_(value){
  if(parts.length===2&&['gmail.com','googlemail.com'].includes(parts[1]))return parts[0].split('+')[0].replace(/\./g,'')+'@gmail.com';
  return s;
 }
-function phoneKey_(value){return String(value||'').replace(/[^0-9]/g,'').replace(/^886/,'0');}
+function phoneKey_(value){return String(value||'').replace(/[^0-9]/g,'').replace(/^(?:886|0)/,'');}
 function checkAbuse_(v,rows){
  const email=emailKey_(v.email),phone=phoneKey_(v.phone),records=rows.slice(1);
  if(records.some(r=>String(r[27])==='垃圾報名'&&emailKey_(r[16])===email))throw Error('此資料無法受理，請透過 LINE 聯絡老師協助報名。');

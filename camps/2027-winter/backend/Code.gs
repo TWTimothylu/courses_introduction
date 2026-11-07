@@ -13,7 +13,7 @@ function setup(){
  if(!ScriptApp.getProjectTriggers().some(t=>t.getHandlerFunction()==='processNotifications'))ScriptApp.newTrigger('processNotifications').timeBased().everyMinutes(5).create();
  console.log('Setup complete; verify sharing is Restricted. Registration remains closed.');
 }
-function doGet(e){if(e&&e.parameter&&e.parameter.action==='challenge')return challenge_();return json_({ok:true,service:'camp2027',protection:'20261107',open:PropertiesService.getScriptProperties().getProperty('REGISTRATION_OPEN')==='true'});}
+function doGet(e){if(e&&e.parameter&&e.parameter.action==='challenge')return challenge_();return json_({ok:true,service:'camp2027',protection:'20261107b',open:PropertiesService.getScriptProperties().getProperty('REGISTRATION_OPEN')==='true'});}
 function json_(v){return ContentService.createTextOutput(JSON.stringify(v)).setMimeType(ContentService.MimeType.JSON);}
 function safe_(v){const s=String(v==null?'':v);return /^[=+@\-\t\r\n]/.test(s)?"'"+s:s;}
 function validate_(v){
