@@ -61,3 +61,34 @@ const status=document.getElementById('copy-status');
 try{await navigator.clipboard.writeText(document.getElementById('line-copy-text').textContent);status.textContent='已複製，加入 LINE 後貼上即可。';}catch{status.textContent='請長按或選取上方文字，手動複製到 LINE。';}
 });
 })();
+
+
+// Progress shortcuts and field feedback. Purely presentational: validation and submission stay in the block above.
+(()=>{
+const form=document.getElementById('trial-form');if(!form)return;
+const sections=[...form.querySelectorAll('fieldset')];
+const labels=['關於孩子','課程與時段','聯絡方式'];
+if(sections.length!==labels.length)return;
+const nav=document.createElement('nav');nav.className='form-progress';nav.setAttribute('aria-label','填寫進度');
+const buttons=sections.map((section,index)=>{
+const button=document.createElement('button');button.type='button';
+const text=document.createElement('span');text.textContent='0'+(index+1)+' '+labels[index];button.append(text);
+button.addEventListener('click',()=>{section.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});
+nav.append(button);return button;
+});
+form.before(nav);
+const complete=section=>{
+const controls=[...section.querySelectorAll('input,select,textarea')];
+if(!controls.every(control=>control.validity.valid))return false;
+const times=section.querySelectorAll('input[name=preferredTimes]');
+return !times.length||[...times].some(input=>input.checked);
+};
+const update=()=>sections.forEach((section,index)=>{
+const done=complete(section);
+section.classList.toggle('done',done);buttons[index].classList.toggle('done',done);
+buttons[index].setAttribute('aria-label',labels[index]+(done?'，已完成':'，尚未完成'));
+});
+form.addEventListener('input',update);form.addEventListener('change',update);
+form.addEventListener('focusout',event=>{if(event.target.matches('input:not([type=checkbox]),select,textarea'))event.target.classList.add('touched');});
+update();
+})();

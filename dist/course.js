@@ -41,3 +41,28 @@ document.querySelectorAll('.explore-card').forEach(card=>{
  function select(index,focus=false){tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;panels[i].hidden=i!==index;});card.querySelector('.explore-marker').textContent='0'+(index+1)+' · '+panels[index].dataset.marker;if(focus)tabs[index].focus();}
  tabs.forEach((tab,index)=>{tab.addEventListener('click',()=>select(index));tab.addEventListener('keydown',event=>{let next;if(event.key==='ArrowRight')next=(index+1)%tabs.length;if(event.key==='ArrowLeft')next=(index+tabs.length-1)%tabs.length;if(event.key==='Home')next=0;if(event.key==='End')next=tabs.length-1;if(next!==undefined){event.preventDefault();select(next,true);}});});
 });
+
+// Floating booking shortcut on wide screens: only while neither in-page booking button is in view.
+(()=>{
+ if(!('IntersectionObserver' in window))return;
+ const booking=document.querySelector('.mobile-booking');
+ const anchors=[document.querySelector('.detail-hero .detail-primary'),document.querySelector('.enrollment-card')].filter(Boolean);
+ if(booking&&anchors.length){
+  const inView=new Set();
+  const watch=new IntersectionObserver(entries=>{entries.forEach(entry=>entry.isIntersecting?inView.add(entry.target):inView.delete(entry.target));booking.classList.toggle('is-visible',inView.size===0);});
+  anchors.forEach(el=>watch.observe(el));
+ }
+ if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ // Gentle entrance for content blocks. Classes are removed afterwards so hover transitions keep working.
+ const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{
+  if(!entry.isIntersecting)return;
+  const el=entry.target;reveal.unobserve(el);el.classList.add('in');
+  setTimeout(()=>{el.classList.remove('reveal','in');el.style.transitionDelay='';},1100);
+ }),{rootMargin:'0px 0px -8% 0px'});
+ document.querySelectorAll('.fit-section>div,.learning-grid article,.small-class-grid article,.detail-media,.gallery-grid figure,.process-list li,.enrollment-card,.related-card').forEach(el=>{
+  if(el.getBoundingClientRect().top<innerHeight)return;
+  const order=[...el.parentElement.children].indexOf(el);
+  el.style.transitionDelay=Math.min(order,3)*80+'ms';
+  el.classList.add('reveal');reveal.observe(el);
+ });
+})();

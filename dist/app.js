@@ -10,12 +10,57 @@ document.getElementById('course-grid').innerHTML=list.map(c=>'<article class="co
 if (typeof window !== 'undefined') window.syncNewStudentOffer?.();
 return list.map(c=>({name:c.name,grades:c.grade,price:c.price}));
 }
-const gradeControl=document.getElementById('grade');
+const gradeControl=[...document.querySelectorAll('.grade-chips input')];
 const validGroups=['all','1-3','3-7','6-12'];
-let initialGroup=new URLSearchParams(location.search).get('grade');
-if(!validGroups.includes(initialGroup)){try{initialGroup=sessionStorage.getItem('course-grade');}catch{}}
-gradeControl.value=validGroups.includes(initialGroup)?initialGroup:'all';
-gradeControl.addEventListener('change',e=>{const group=e.target.value;try{sessionStorage.setItem('course-grade',group);}catch{}const url=new URL(location.href);url.searchParams.set('grade',group);history.replaceState(null,'',url);renderCourses(group);});
-renderCourses(gradeControl.value);
-window.addEventListener('pageshow',()=>renderCourses(gradeControl.value));
+let currentGroup=new URLSearchParams(location.search).get('grade');
+if(!validGroups.includes(currentGroup)){try{currentGroup=sessionStorage.getItem('course-grade');}catch{}}
+if(!validGroups.includes(currentGroup))currentGroup='all';
+const syncGradeControls=()=>gradeControl.forEach(input=>{input.checked=input.value===currentGroup;});
+const finderCta=document.querySelector('.course-finder-cta');
+gradeControl.forEach(input=>input.addEventListener('change',()=>{
+if(!input.checked||!validGroups.includes(input.value))return;
+currentGroup=input.value;
+try{sessionStorage.setItem('course-grade',currentGroup);}catch{}
+const url=new URL(location.href);url.searchParams.set('grade',currentGroup);history.replaceState(null,'',url);
+syncGradeControls();
+renderCourses(currentGroup);
+// Draw the eye to the next step after choosing in the hero.
+if(finderCta&&input.name==='grade'){finderCta.classList.remove('nudge');void finderCta.offsetWidth;finderCta.classList.add('nudge');}
+}));
+syncGradeControls();
+renderCourses(currentGroup);
+window.addEventListener('pageshow',()=>{syncGradeControls();renderCourses(currentGroup);});
 document.querySelectorAll('video').forEach(v=>v.addEventListener('play',()=>document.querySelectorAll('video').forEach(other=>{if(other!==v)other.pause()})));
+
+// Homepage navigation and motion enhancements. Everything stays usable without them.
+(()=>{
+const header=document.querySelector('.site-header');
+if(!header)return;
+const nav=header.querySelector('nav');
+const toggle=header.querySelector('.menu-toggle');
+const updateHeader=()=>header.classList.toggle('is-scrolled',window.scrollY>8&&header.getBoundingClientRect().top<=0);
+window.addEventListener('scroll',updateHeader,{passive:true});
+updateHeader();
+if(toggle&&nav){
+toggle.hidden=false;
+const setMenu=open=>{header.classList.toggle('menu-open',open);toggle.setAttribute('aria-expanded',String(open));toggle.setAttribute('aria-label',open?'關閉選單':'開啟選單');};
+toggle.addEventListener('click',()=>setMenu(toggle.getAttribute('aria-expanded')!=='true'));
+nav.addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false);});
+document.addEventListener('click',e=>{if(!header.contains(e.target))setMenu(false);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&toggle.getAttribute('aria-expanded')==='true'){setMenu(false);toggle.focus();}});
+}
+if(!('IntersectionObserver' in window))return;
+const links=new Map([...nav.querySelectorAll('a[href^="#"]')].map(link=>[link.getAttribute('href').slice(1),link]));
+const visible=new Set();
+const spy=new IntersectionObserver(entries=>{
+entries.forEach(entry=>entry.isIntersecting?visible.add(entry.target.id):visible.delete(entry.target.id));
+links.forEach((link,id)=>visible.has(id)?link.setAttribute('aria-current','true'):link.removeAttribute('aria-current'));
+},{rootMargin:'-45% 0px -54% 0px'});
+links.forEach((link,id)=>{const section=document.getElementById(id);if(section)spy.observe(section);});
+if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+const reveal=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('in');reveal.unobserve(entry.target);}}),{rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.offer-card,.camp-banner,.section-heading,.video-grid figure,.results>*,.closing .wrap').forEach(el=>{
+if(el.getBoundingClientRect().top<window.innerHeight)return;
+el.classList.add('reveal');reveal.observe(el);
+});
+})();
