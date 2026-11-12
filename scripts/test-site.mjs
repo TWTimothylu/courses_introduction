@@ -12,6 +12,8 @@ for(const file of files){
  if(!file.endsWith('.html'))continue;
  const html=fs.readFileSync(file,'utf8');
  assert.ok(!html.includes('github.io/creativstack_camp2027/'),file+' stale camp link');
+ const gtagCount=(html.match(/googletagmanager\.com\/gtag\/js\?id=G-MH5D7SY722/g)||[]).length;
+ assert.equal(gtagCount,html.includes('window.location.replace')?0:1,file+' Google tag');
  assert.ok(!html.includes('https://twtimothylu.github.io/courses_introduction/'),file+' stale canonical or sharing URL');
  if(html.includes('window.location.replace')){
   let actual;const link={};

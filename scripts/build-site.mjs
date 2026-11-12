@@ -24,4 +24,15 @@ const map=fs.readFileSync(path.join(out,'sitemap.xml'),'utf8').replace('</urlset
 fs.writeFileSync(path.join(out,'sitemap.xml'),map);
 fs.writeFileSync(path.join(out,'.nojekyll'),'');
 run('scripts/build-legacy.mjs');
+// Google tag (GA4 / Google Ads), added right before </head> of every public page.
+// Redirect-only legacy pages are skipped so a visit is not counted twice.
+const googleTagId='G-MH5D7SY722';
+const googleTag=`<!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=${googleTagId}"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${googleTagId}');</script>`;
+const htmlFiles=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?htmlFiles(path.join(dir,e.name)):e.name.endsWith('.html')?[path.join(dir,e.name)]:[]);
+for(const file of htmlFiles(out)){
+ const html=fs.readFileSync(file,'utf8');
+ if(html.includes('window.location.replace')||html.includes('googletagmanager.com/gtag/js'))continue;
+ if(!html.includes('</head>'))throw new Error('No </head> in '+file);
+ fs.writeFileSync(file,html.replace('</head>',googleTag+'</head>'));
+}
 console.log('Complete classroom website assembled in _site.');

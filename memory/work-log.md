@@ -4,6 +4,27 @@
 
 ---
 
+## 2026-11-12｜加入 Google 代碼（G-MH5D7SY722）
+
+執行者：Claude（使用者 Lu 指示，為冬令營 Google 廣告設定）。2026-11-12 由 Claude Code 本機重跑驗證後 commit 並 push 至 main，GitHub Actions 自動發布。
+
+### 做了什麼
+
+- scripts/build-site.mjs：組合 _site 後，在每個公開 HTML 的 `</head>` 前插入 Google 代碼（gtag.js，ID `G-MH5D7SY722`）。只轉址的舊網址頁（含 `window.location.replace`）略過，避免重複計算。來源 dist/ 與營隊 public/ 不含代碼，本機預覽不會送出統計。
+- scripts/test-site.mjs：檢查每個非轉址頁剛好有一次 Google 代碼、轉址頁沒有。
+- camps/2027-winter/scripts/build.mjs：頁尾「網站使用與廣告成效追蹤」說明加入 Google Analytics／Google Ads 與 Google 合作網站資料說明連結。
+
+### 驗證
+
+在 GitHub main（76576d9）的副本上跑完 pages.yml 的全部步驟：build-site、test-seo、test-schedule、test-site、test-recaptcha、test-backend、營隊 npm test（22 項）全數通過。_site 共 14 個頁面有代碼（首頁、體驗報名、五門課程、404、營隊總覽、冬令營首頁、三營隊頁、報名頁），19 個轉址頁沒有。
+
+### 接手注意
+
+- 若要改 Google 代碼 ID，只改 build-site.mjs 的 `googleTagId` 與 test-site.mjs 的檢查字串。
+- 尚未設定 Google Ads 轉換事件（例如營隊報名成功）；若要做，比照 tracking.js 的 Meta Lead 只在後端確認成功後送出，且不送任何個資。
+
+---
+
 ## 2026-11-11｜全站互動改版（首頁、五門詳情頁、體驗報名頁）
 
 執行者：Claude Code（使用者 Lu 指示）。
