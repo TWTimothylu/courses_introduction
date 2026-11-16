@@ -7,7 +7,7 @@ root=parser.parse_args().source_dir.resolve()
 if not (root/'網頁用素材').is_dir():
  raise SystemExit('Source materials not found. Pass --source-dir pointing to 營隊課程.')
 out=Path(__file__).resolve().parents[1]/'public/assets';out.mkdir(parents=True,exist_ok=True)
-sources={'rc.webp':root/'網頁用素材/樂高科技遙控車營-招生廣告-1x1-v6.png','scratch.webp':root/'網頁用素材/Scratch遊戲營_查看課程主圖_1x1.png','essential.webp':root/'網頁用素材/小小樂高工程師營-招生廣告-1x1-v3.png','class2.webp':root/'素材/小小機器人營3.jpg'}
+sources={'rc.webp':root/'網頁用素材/樂高科技遙控車營-招生廣告-1x1-v7.webp','scratch.webp':root/'網頁用素材/Scratch遊戲程式營-招生廣告-1x1-v7.webp','essential.webp':root/'網頁用素材/小小樂高工程師營-招生廣告-1x1-v7.webp','class2.webp':root/'素材/小小機器人營3.jpg'}
 for name,p in sources.items():
  im=ImageOps.exif_transpose(Image.open(p)).convert('RGB');im.thumbnail((960,960));im.save(out/name,'WEBP',quality=85)
 for size in [640,960]:

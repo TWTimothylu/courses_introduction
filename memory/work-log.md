@@ -4,6 +4,26 @@
 
 ---
 
+## 2026-11-16｜替換冬令營三門課程主圖
+
+執行者：Claude（使用者 Lu 提供四張新版 1:1 招生圖）。使用者同日指示發布，commit 並 push 至 main，由 GitHub Actions 發布。
+
+### 做了什麼
+
+- camps/2027-winter/public/assets 的 rc.webp、scratch.webp、essential.webp 換成新版招生圖（960px、WebP 85，檔名不變，所以卡片、課程頁主圖與分享圖一併更新）。
+- 原圖（2000px）存入工作區 營隊課程/網頁用素材，檔名結尾 -v7；prepare-assets.py 的來源改指向 v7，重跑不會換回舊圖。
+- 第四張「三營隊總覽」圖只存入素材資料夾（2027寒假冬令營-三營隊總覽-1x1-v7.webp），網站目前沒有對應的位置，尚未使用。
+
+### 驗證
+
+- build-site、test-seo、test-schedule、test-site（111 檔）與營隊 npm test（22 項）通過；本機預覽營隊首頁三張卡片顯示新圖。
+
+### 未完成
+
+- 使用者決定總覽圖先不使用，原圖留在素材資料夾備用。
+
+---
+
 ## 2026-11-12｜加入 Google 代碼（G-MH5D7SY722）
 
 執行者：Claude（使用者 Lu 指示，為冬令營 Google 廣告設定）。2026-11-12 由 Claude Code 本機重跑驗證後 commit 並 push 至 main，GitHub Actions 自動發布。
