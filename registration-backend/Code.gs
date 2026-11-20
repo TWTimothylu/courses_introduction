@@ -5,7 +5,10 @@ const SETTINGS = Object.freeze({
   lineUrl: 'https://lin.ee/7FoFpdM',
   privacyVersion: '2026-09-26-v1'
 });
-const HEADERS = ['報名時間','報名編號','小朋友名字','年級','學校','體驗課程','偏好時段','相關經驗','經驗補充','家長稱呼','家長手機','家長Email','其他安排需求','個資使用同意','同意條款版本','報名來源','聯絡進度','LINE已聯絡','確認信狀態','寄信時間','寄信錯誤','請求識別碼','資料指紋','寄信嘗試次數','最後嘗試時間','推薦人','管理員通知狀態','管理員通知時間','管理員通知錯誤','管理員通知嘗試次數','管理員最後嘗試時間'];
+const HEADERS = ['報名時間','報名編號','小朋友名字','年級','學校','體驗課程','偏好時段','相關經驗','經驗補充','家長稱呼','家長手機','家長Email','其他安排需求','個資使用同意','同意條款版本','報名來源','聯絡進度','LINE已聯絡','確認信狀態','寄信時間','寄信錯誤','請求識別碼','資料指紋','寄信嘗試次數','最後嘗試時間','推薦人','管理員通知狀態','管理員通知時間','管理員通知錯誤','管理員通知嘗試次數','管理員最後嘗試時間','得知管道'];
+const HEARD_FROM=["親友／同學家長介紹","Facebook","Instagram","Google 搜尋","Google 地圖","LINE 官方帳號／LINE 群組","學校／安親班傳單","路過看到教室","舊生／曾上過課","其他"];
+function heardFrom_(v){const s=String(v==null?'':v).trim();if(!s)return '';if(s.length>70||/[\x00-\x1f]/.test(s)||!(HEARD_FROM.includes(s)&&s!=='其他'||/^其他：.{1,60}$/.test(s)))throw new Error('請選擇得知課程的管道');return s;}
+
 const COURSE_NAMES = {essential:'簡易樂高機器人班',prime:'樂高機器人班',scratch:'Scratch 程式班','robot-python':'樂高機器人 Python 班',python:'Python 程式班',unsure:'由老師推薦課程'};
 const TIMES = ['平日下午','平日晚上','週六上午','週六下午','週日上午','週日下午','時間彈性，可討論'];
 const EXPERIENCES = ['沒有，想第一次試試','玩過樂高，尚未接觸程式','學過機器人或 Scratch','學過 Python 或其他文字程式','其他經驗'];
@@ -36,9 +39,14 @@ function sheet_(){
     sheet.getRange(2,26,sheet.getMaxRows()-1,1).setNumberFormat('@');
     headers[25]='推薦人';
   }
-  if(JSON.stringify(headers.slice(0,26))===JSON.stringify(HEADERS.slice(0,26)) && headers.slice(26).every(v=>v==='')){
-    sheet.getRange(1,27,1,5).setValues([HEADERS.slice(26)]).setFontWeight('bold').setBackground('#eef0f3');
-    headers.splice(26,5,...HEADERS.slice(26));
+  if(JSON.stringify(headers.slice(0,26))===JSON.stringify(HEADERS.slice(0,26)) && headers.slice(26,31).every(v=>v==='')){
+    sheet.getRange(1,27,1,5).setValues([HEADERS.slice(26,31)]).setFontWeight('bold').setBackground('#eef0f3');
+    headers.splice(26,5,...HEADERS.slice(26,31));
+  }
+  if(headers[31]==='' && JSON.stringify(headers.slice(0,31))===JSON.stringify(HEADERS.slice(0,31))){
+    sheet.getRange(1,32).setValue('得知管道').setFontWeight('bold').setBackground('#eef0f3');
+    sheet.setColumnWidth(32,200);
+    headers[31]='得知管道';
   }
   if(JSON.stringify(headers)!==JSON.stringify(HEADERS))throw new Error('報名表欄位已變更，請聯絡管理者');
   return sheet;
@@ -77,7 +85,7 @@ function validate_(raw){
     childName:text_(raw.childName,40,true),grade:Number(raw.grade),school:text_(raw.school,80,true),
     course:text_(raw.course,40,true),parentName:text_(raw.parentName,40,true),
     phone:text_(raw.phone,20,true).replace(/[ -]/g,''),email:text_(raw.email,160,true).toLowerCase(),
-    experience:text_(raw.experience,80,true),experienceNotes:text_(raw.experienceNotes,500,false),notes:text_(raw.notes,800,false),referrer:text_(raw.referrer,80,false),
+    experience:text_(raw.experience,80,true),experienceNotes:text_(raw.experienceNotes,500,false),notes:text_(raw.notes,800,false),referrer:text_(raw.referrer,80,false),heardFrom:heardFrom_(raw.heardFrom),
     submissionId:text_(raw.submissionId,50,true),token:text_(raw.token,50,true)
   };
   if(!Number.isInteger(d.grade)||d.grade<1||d.grade>12)throw new Error('請選擇有效年級');
@@ -116,7 +124,7 @@ function submitApplication(raw){
     if(todayRows.length>=100)return {ok:false,message:'線上報名暫停收件，請透過官方 LINE 聯絡我們。'};
     try{verifyRecaptcha_(raw.recaptchaToken);}catch(error){return {ok:false,saved:false,message:error.message};}
     const id='CS-'+Utilities.formatDate(new Date(),'Asia/Taipei','yyyyMMdd')+'-'+Utilities.getUuid().slice(0,8).toUpperCase();
-    const row=[new Date(),id,d.childName,d.grade+' 年級',d.school,COURSE_NAMES[d.course],d.preferredTimes.join('、'),d.experience,d.experienceNotes,d.parentName,d.phone,d.email,d.notes,'已同意',SETTINGS.privacyVersion,'體驗課報名頁','待聯絡',false,'待寄送','','',d.submissionId,fingerprint,0,'',d.referrer,'待寄送','','',0,''].map(cell_);
+    const row=[new Date(),id,d.childName,d.grade+' 年級',d.school,COURSE_NAMES[d.course],d.preferredTimes.join('、'),d.experience,d.experienceNotes,d.parentName,d.phone,d.email,d.notes,'已同意',SETTINGS.privacyVersion,'體驗課報名頁','待聯絡',false,'待寄送','','',d.submissionId,fingerprint,0,'',d.referrer,'待寄送','','',0,'',d.heardFrom].map(cell_);
     sheet.appendRow(row);
     SpreadsheetApp.flush();
     CacheService.getScriptCache().remove('form:'+d.token);
@@ -212,13 +220,11 @@ function updateRegistrationFields(){
 }
 
 function adminMailForRow_(r){
-  const sheetUrl='https://docs.google.com/spreadsheets/d/'+PropertiesService.getScriptProperties().getProperty('SPREADSHEET_ID')+'/edit';
-  const fields=[['報名編號',r[1]],['孩子姓名',r[2]],['年級',r[3]],['學校',r[4]],['體驗課程',r[5]],['偏好時段',r[6]],['相關經驗',r[7]],['經驗補充',r[8]],['家長稱呼',r[9]],['家長手機',String(r[10]).replace(/^'/,'')],['家長 Email',r[11]],['推薦人',r[25]],['其他安排需求',r[12]]];
-  const body='收到一份新的體驗課報名，請聯絡家長安排體驗。\n\n'+fields.map(([k,v])=>k+'：'+(v||'未填')).join('\n')+'\n\n開啟報名管理表：\n'+sheetUrl;
-  const htmlBody='<div style="font-family:Arial,sans-serif;color:#152640;line-height:1.8;max-width:640px;margin:auto"><h2>收到新的體驗課報名</h2><p>請聯絡家長確認課程與體驗時間。</p><table style="width:100%;border-collapse:collapse">'+fields.map(([k,v])=>'<tr><th style="text-align:left;padding:8px;border-bottom:1px solid #ddd;white-space:nowrap">'+escape_(k)+'</th><td style="padding:8px;border-bottom:1px solid #ddd;white-space:pre-wrap">'+escape_(v||'未填')+'</td></tr>').join('')+'</table><p><a href="'+escape_(sheetUrl)+'">開啟報名管理表 →</a></p></div>';
-  return {to:SETTINGS.notify,subject:'【創意方塊｜新體驗報名】'+String(r[2]).replace(/[\r\n]/g,' ')+'｜'+r[5],body,htmlBody,name:'創意方塊報名通知',replyTo:r[11]};
+  // Keep notifications brief; full contact details remain in the private Sheet.
+  const clean=v=>String(v||'未填').replace(/[\r\n]+/g,' ').trim();
+  const body='收到新的體驗課報名。\n\n報名編號：'+clean(r[1])+'\n孩子姓名：'+clean(r[2])+'\n年級：'+clean(r[3])+'\n體驗課程：'+clean(r[5])+'\n偏好時段：'+clean(r[6])+'\n推薦人：'+clean(r[25])+'\n得知管道：'+clean(r[31])+'\n\n請開啟 Google 雲端硬碟中的「創意方塊｜體驗課報名管理表」，查看家長聯絡資料並安排體驗時間。\n\n創意方塊機器人教室';
+  return {to:SETTINGS.notify,subject:'【創意方塊｜新體驗報名】'+clean(r[2])+'｜'+clean(r[5]),body,name:'創意方塊報名通知',replyTo:SETTINGS.sender};
 }
-
 function sendAdminNotificationTest(){
   assertSender_();sheet_();
   const r=Array(HEADERS.length).fill('');

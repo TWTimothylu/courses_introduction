@@ -23,6 +23,7 @@ form.elements.grade.addEventListener('change',()=>{
 const grade=Number(form.elements.grade.value);
 document.getElementById('course-hint').textContent=grade<=3?'1–3 年級可從簡易樂高機器人開始；不確定也能請老師推薦。':grade<=5?'3–7 年級可探索樂高機器人或 Scratch。':grade<=7?'這個年級可探索機器人、Scratch 或 Python；老師會協助確認。':'6–12 年級可探索 Python 或樂高機器人 Python。';
 });
+form.elements.heardFrom.addEventListener('change',()=>{const other=form.elements.heardFrom.value==='其他';document.getElementById('heardFromOtherWrap').hidden=!other;form.elements.heardFromOther.required=other;if(other)form.elements.heardFromOther.focus();});
 form.addEventListener('change',()=>{if(form.querySelector('input[name=preferredTimes]:checked'))document.getElementById('time-error').hidden=true;});
 function showReceipt(result,data){
 completed=live;error.hidden=true;
@@ -40,6 +41,7 @@ error.hidden=true;
 const times=Array.from(form.querySelectorAll('input[name=preferredTimes]:checked')).map(el=>el.value);
 if(!times.length){document.getElementById('time-error').hidden=false;form.querySelector('input[name=preferredTimes]').focus();return;}
 const data=Object.fromEntries(new FormData(form));data.preferredTimes=times;data.consent=form.elements.consent.checked;
+if(data.heardFrom==='其他')data.heardFrom='其他：'+String(data.heardFromOther||'').trim();delete data.heardFromOther;
 data.phone=data.phone.replace(/[ -]/g,'');data.email=data.email.trim().toLowerCase();
 if(!/^(09\d{8}|\+8869\d{8})$/.test(data.phone)){error.hidden=false;error.textContent='請確認手機號碼，例：0912-345-678。';form.elements.phone.focus();return;}
 Object.assign(data,{submissionId:requestId,token,startedAt,privacyVersion:'2026-09-26-v1',source:'體驗課報名頁'});

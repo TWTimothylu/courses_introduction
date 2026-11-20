@@ -2,7 +2,10 @@
  * CONSENT_VERSION. Keep REGISTRATION_OPEN false until acceptance is complete.
  * Public endpoint never exposes records. Run setup() once as the owner. */
 const FOLDER_ID = '1ouGXc0d-3iIANtWskI8l14NjLfAqjwhR';
-const HEADERS = ['編號','建立時間','請求ID','資料指紋','營隊ID','營隊名稱','方案ID','方案名稱','日期','費用','早托日期','孩子姓名','年級','學校','家長','電話','Email','緊急聯絡人','緊急電話','飲食過敏','備註','推薦人','經驗','組裝能力','同意版本','同意時間','戶外告知','處理狀態','家長信狀態','家長信次數','家長信時間','家長信錯誤','管理員信狀態','管理員信次數','管理員信時間','管理員信錯誤'];
+const HEADERS = ['編號','建立時間','請求ID','資料指紋','營隊ID','營隊名稱','方案ID','方案名稱','日期','費用','早托日期','孩子姓名','年級','學校','家長','電話','Email','緊急聯絡人','緊急電話','飲食過敏','備註','推薦人','經驗','組裝能力','同意版本','同意時間','戶外告知','處理狀態','家長信狀態','家長信次數','家長信時間','家長信錯誤','管理員信狀態','管理員信次數','管理員信時間','管理員信錯誤','得知管道'];
+const HEARD_FROM=["親友／同學家長介紹","Facebook","Instagram","Google 搜尋","Google 地圖","LINE 官方帳號／LINE 群組","學校／安親班傳單","路過看到教室","舊生／曾上過課","其他"];
+function heardFrom_(v){const s=String(v==null?'':v).trim();if(!s)return '';if(s.length>70||/[\x00-\x1f]/.test(s)||!(HEARD_FROM.includes(s)&&s!=='其他'||/^其他：.{1,60}$/.test(s)))throw new Error('請選擇得知課程的管道');return s;}
+
 function setup(){
  const props=PropertiesService.getScriptProperties();
  if(!props.getProperty('SENDER_EMAIL'))props.setProperty('SENDER_EMAIL','teacher_lu@creativstacks.info');
@@ -23,6 +26,7 @@ function validate_(v){
  for(const k of ['school','referral','diet','notes'])if(typeof v[k]!=='string'||v[k].length>500)throw Error('欄位內容過長或格式錯誤');
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email))throw Error('Email 格式錯誤');
  if(!/^[0-9+() -]{8,20}$/.test(v.phone)||!/^[0-9+() -]{8,20}$/.test(v.emergencyPhone))throw Error('電話格式錯誤');
+ v.heardFrom=heardFrom_(v.heardFrom);
  if(!['none','some'].includes(v.experience))throw Error('經驗選項錯誤');
  const c=CAMPS.find(c=>c.id===v.camp),p=c&&c.plans.find(p=>p.id===v.plan);if(!p)throw Error('營隊與方案不符');
  const grade=Number(v.grade);if(!String(v.grade).match(/^[0-7]$/)||(!c.grades.includes(grade)&&!(c.id==='rc'&&v.ability===true)))throw Error('不符合營隊參加資格');
@@ -37,7 +41,7 @@ function doPost(e){
  const props=PropertiesService.getScriptProperties();
  if(!e.postData||e.postData.contents.length>12000)return json_({ok:false,saved:false,message:'資料格式錯誤'});
  const v=JSON.parse(e.postData.contents),valid=validate_(v),c=valid.c,p=valid.p;
- const normalized=JSON.stringify([v.camp,v.plan,v.early.slice().sort(),v.child,v.grade,v.school,v.parent,v.phone,v.email,v.emergencyName,v.emergencyPhone,v.diet,v.notes,v.referral,v.experience,v.ability,v.privacy,v.rules,v.outdoor,v.consentVersion]);
+ const normalized=JSON.stringify([v.camp,v.plan,v.early.slice().sort(),v.child,v.grade,v.school,v.parent,v.phone,v.email,v.emergencyName,v.emergencyPhone,v.diet,v.notes,v.referral,v.experience,v.ability,v.privacy,v.rules,v.outdoor,v.consentVersion,v.heardFrom]);
  const fingerprint=Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,normalized));
  lock=LockService.getScriptLock();if(!lock.tryLock(10000))return json_({ok:false,message:'系統忙碌，請使用相同資料重試。'});
  const sheet=SpreadsheetApp.openById(props.getProperty('SHEET_ID')).getSheetByName('報名紀錄'),rows=sheet.getDataRange().getValues();
@@ -47,7 +51,8 @@ function doPost(e){
  if(v.consentVersion!==props.getProperty('CONSENT_VERSION'))return json_({ok:false,saved:false,message:'規則版本已更新，請重新整理並閱讀。'});
  checkAbuse_(v,rows);verifyChallenge_(v);
  const id='W27-'+Utilities.getUuid().slice(0,8).toUpperCase(),now=new Date().toISOString();
- const row=[id,now,v.requestId,fingerprint,c.id,c.name,p.id,p.name,c.dates.join(', '),valid.total,v.early.join(', '),v.child,String(v.grade),v.school,v.parent,v.phone,v.email,v.emergencyName,v.emergencyPhone,v.diet,v.notes,v.referral,v.experience,String(v.ability===true),v.consentVersion,now,c.id==='rc'?'知悉安排；待詳細活動同意':'不適用','待聯絡','待寄送',0,'','','待寄送',0,'',''];
+ const row=[id,now,v.requestId,fingerprint,c.id,c.name,p.id,p.name,c.dates.join(', '),valid.total,v.early.join(', '),v.child,String(v.grade),v.school,v.parent,v.phone,v.email,v.emergencyName,v.emergencyPhone,v.diet,v.notes,v.referral,v.experience,String(v.ability===true),v.consentVersion,now,c.id==='rc'?'知悉安排；待詳細活動同意':'不適用','待聯絡','待寄送',0,'','','待寄送',0,'','',v.heardFrom];
+ if(sheet.getRange(1,HEADERS.length).getValue()==='')sheet.getRange(1,HEADERS.length).setValue('得知管道').setFontWeight('bold');
  writing=true;sheet.appendRow(row.map(safe_));SpreadsheetApp.flush();
  return json_({ok:true,registrationId:id,campName:c.name,dateLabel:c.dates.join(', '),planName:p.name,total:valid.total});
  }catch(err){return json_({ok:false,saved:writing?undefined:false,message:writing?'收件結果尚未確認，請使用相同資料重試或聯絡老師。':'無法受理：'+String(err.message).slice(0,160)});}finally{if(lock)lock.releaseLock();}
