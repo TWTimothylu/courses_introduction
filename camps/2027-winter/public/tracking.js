@@ -54,10 +54,27 @@ export function initTracking() {
   } catch { /* Advertising failures must never block registration. */ }
 }
 
+// Google Ads conversion「提交待開發客戶表單」, sent through the site-wide Google tag
+// (injected by scripts/build-site.mjs). Event name copied from the Google Ads setup page.
+const googleAdsConversionEvent = 'ads_conversion___1';
+function trackGoogleAdsConversion(requestId) {
+  const key = 'gads:' + googleAdsConversionEvent + ':' + requestId;
+  try {
+    if (typeof window.gtag !== 'function' || sent.has(key)) return;
+    try { if (sessionStorage.getItem(key)) return; } catch {}
+    // transaction_id lets Google Ads drop duplicates; it is a random UUID, not personal data.
+    window.gtag('event', googleAdsConversionEvent, {transaction_id: 'camp2027-' + requestId});
+    sent.add(key);
+    try { sessionStorage.setItem(key, '1'); } catch {}
+  } catch { /* A blocked Google tag must not change a successful registration. */ }
+}
+
 // Call only after the registration API has confirmed successful storage.
 // No form values, names, contact details, or payment amounts are sent.
 export function trackRegistrationLead(result, requestId) {
-  if (!ready || result?.ok !== true || !result.registrationId || !requestId) return;
+  if (result?.ok !== true || !result.registrationId || !requestId) return;
+  trackGoogleAdsConversion(requestId);
+  if (!ready) return;
   const eventId = 'camp2027-lead-' + requestId;
   const key = 'meta:' + pixelId + ':' + eventId;
   try {

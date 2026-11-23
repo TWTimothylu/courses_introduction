@@ -50,3 +50,22 @@ test('blocked storage or pixel does not break successful registration', () => {
   context.window.fbq = () => { throw Error('blocked'); };
   assert.doesNotThrow(() => context.trackRegistrationLead(result, 'request-2'));
 });
+test('Google Ads conversion fires once, only after confirmed storage, without personal data', () => {
+  const {context} = setup('');
+  const calls = []; context.window.gtag = (...a) => calls.push(a);
+  for (const result of [{ok:false}, {ok:true}, null]) context.trackRegistrationLead(result, 'request-1');
+  assert.equal(calls.length, 0);
+  const result = {ok:true, registrationId:'W27-1', child:'private child', email:'private@example.com', total:5300};
+  context.trackRegistrationLead(result, 'request-1');
+  context.trackRegistrationLead(result, 'request-1');
+  assert.equal(calls.length, 1);
+  assert.deepEqual(JSON.parse(JSON.stringify(calls[0])), ['event', 'ads_conversion___1', {transaction_id: 'camp2027-request-1'}]);
+  assert.equal(JSON.stringify(calls).includes('private'), false);
+});
+test('missing or blocked Google tag does not break successful registration', () => {
+  const {context} = setup();
+  const result = {ok:true, registrationId:'W27-1'};
+  assert.doesNotThrow(() => context.trackRegistrationLead(result, 'request-1'));
+  context.window.gtag = () => { throw Error('blocked'); };
+  assert.doesNotThrow(() => context.trackRegistrationLead(result, 'request-2'));
+});

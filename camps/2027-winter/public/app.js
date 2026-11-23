@@ -1,6 +1,6 @@
 import {createCaptcha} from '../../recaptcha.js?v=20261107';
 import {renderHome,renderCourse,card} from './render.js?v=20261102';
-import {initTracking,trackRegistrationLead} from './tracking.js?v=20261021b';
+import {initTracking,trackRegistrationLead} from './tracking.js?v=20261123gads';
 initTracking();
 import {config} from './config.js';
 import {refundHtml} from './refund.js';
